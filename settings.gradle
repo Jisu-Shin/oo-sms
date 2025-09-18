@@ -1,0 +1,7 @@
+rootProject.name = 'oo-sms'
+
+include 'sms-service'
+include 'view-service'
+include 'booking-service'
+include 'cust-service'
+include 'common'
