@@ -5,6 +5,7 @@ import com.oosms.common.dto.SmsFindListResponseDto;
 import com.oosms.common.dto.SmsSendRequestDto;
 import com.oosms.sms.domain.Sms;
 import com.oosms.sms.domain.SmsTemplate;
+import com.oosms.sms.mapper.SmsMapper;
 import com.oosms.sms.repository.JpaSmsRepository;
 import com.oosms.sms.repository.JpaSmsTemplateRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class SmsService {
     private final JpaSmsTemplateRepository jpaSmsTemplateRepository;
     private final JpaSmsRepository jpaSmsRepository;
     private final SmsFactory smsFactory;
+    private final SmsMapper smsMapper;
 
     @Transactional
     public boolean send(SmsSendRequestDto requestDto) {
@@ -67,7 +69,7 @@ public class SmsService {
         LocalDateTime startLdt = LocalDateTime.parse(startDt,format);
         LocalDateTime endLdt = LocalDateTime.parse(endDt,format);
         return jpaSmsRepository.findAllBySendDtBetween(startLdt, endLdt).stream()
-                .map(SmsFindListResponseDto::new)
+                .map(smsMapper::toDto)
                 .collect(Collectors.toList());
     }
 

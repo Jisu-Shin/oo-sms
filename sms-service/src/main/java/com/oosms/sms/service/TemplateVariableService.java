@@ -2,6 +2,8 @@ package com.oosms.sms.service;
 
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.common.dto.TemplateVariableDto;
+import com.oosms.sms.domain.TemplateVariableType;
+import com.oosms.sms.mapper.TemplateVariableMapper;
 import com.oosms.sms.repository.JpaTemplateVariableRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TemplateVariableService {
 
+    private final TemplateVariableMapper templateVariableMapper;
     private final JpaTemplateVariableRepository jpaTemplateVariableRepository;
 
     @Transactional
     public Long create(TemplateVariableDto dto) {
-        TemplateVariable templateVariable = TemplateVariable.create(dto.getEnText(), dto.getKoText(), dto.getVariableType());
+        TemplateVariable templateVariable = TemplateVariable.create(dto.getEnText(), dto.getKoText(), TemplateVariableType.valueOf(dto.getVariableType()));
         jpaTemplateVariableRepository.save(templateVariable);
 
         return templateVariable.getId();
@@ -27,7 +30,7 @@ public class TemplateVariableService {
 
     public List<TemplateVariableDto> findAll() {
         return jpaTemplateVariableRepository.findAll().stream()
-                .map(TemplateVariableDto::new)
+                .map(templateVariableMapper::toDto)
                 .collect(Collectors.toList());
     }
 }

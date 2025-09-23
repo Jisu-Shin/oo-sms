@@ -1,6 +1,6 @@
 package com.oosms.sms.service.smsTemplateVarBind;
 
-import com.jisutudy.client.CustApiService;
+import com.oosms.sms.client.CustApiService;
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.common.dto.CustListResponseDto;
 import lombok.RequiredArgsConstructor;
