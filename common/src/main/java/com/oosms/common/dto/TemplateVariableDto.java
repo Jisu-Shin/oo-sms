@@ -15,13 +15,6 @@ public class TemplateVariableDto {
     private String koText;
 
     @NotNull
-    private TemplateVariableType variableType;
+    private String variableType;
     private String displayVarType;
-
-    public TemplateVariableDto(TemplateVariable entity) {
-        this.enText = entity.getEnText();
-        this.koText = entity.getKoText();
-        this.variableType = entity.getVariableType();
-        this.displayVarType = entity.getVariableType().getDisplayName();
-    }
 }
