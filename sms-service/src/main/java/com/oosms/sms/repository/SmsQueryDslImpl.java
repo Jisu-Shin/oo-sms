@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.oosms.sms.domain.sms.QSms.sms;
+import static com.oosms.sms.domain.QSms.sms;
 
 @Repository
 public class SmsQueryDslImpl implements SmsQueryDsl{
