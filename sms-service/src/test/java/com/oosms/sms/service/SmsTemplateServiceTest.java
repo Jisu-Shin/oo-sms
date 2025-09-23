@@ -1,6 +1,7 @@
 package com.oosms.sms.service;
 
 import com.oosms.common.dto.SmsTemplateRequestDto;
+import com.oosms.sms.config.TestConfig;
 import com.oosms.sms.domain.SmsTemplate;
 import com.oosms.sms.domain.SmsType;
 import com.oosms.sms.domain.TemplateVariable;
@@ -10,15 +11,16 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
+@Import(TestConfig.class)
 class SmsTemplateServiceTest {
 
     @Autowired
@@ -67,7 +69,7 @@ class SmsTemplateServiceTest {
         //given
         setUp();
         String templateContent = "#{고객명}님 안녕하세요 #{공연명}은 ...";
-        SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, SmsType.INFORMAITONAL.getDisplayName());
+        SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, SmsType.INFORMAITONAL.name());
 
         //when
         Long tmpltId = smsTemplateService.create(requestDto);
@@ -86,7 +88,7 @@ class SmsTemplateServiceTest {
         //given
         setUp();
         String templateContent = "#{고객명}님 안녕하세요 #{템플릿변수없음}은 ...";
-        SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, SmsType.INFORMAITONAL.getDisplayName());
+        SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, SmsType.INFORMAITONAL.name());
 
         //when
         assertThatThrownBy(()->smsTemplateService.create(requestDto))
@@ -106,7 +108,7 @@ class SmsTemplateServiceTest {
 
     private void templateSetUp() {
         String templateContent = "정보성 템플릿 저장 #{고객명}님 안녕하세요 #{공연명}은 ...";
-        SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, SmsType.INFORMAITONAL.getDisplayName());
+        SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, SmsType.INFORMAITONAL.name());
         createdTemplateId = smsTemplateService.create(requestDto);
     }
 
@@ -116,7 +118,7 @@ class SmsTemplateServiceTest {
         //given
         setUp();
         String templateContent = "정보성 템플릿 저장 #{고객명}님께 안내해드리는~";
-        SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, SmsType.INFORMAITONAL.getDisplayName());
+        SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, SmsType.INFORMAITONAL.name());
         requestDto.setId(createdTemplateId);
 
         //when
