@@ -1,0 +1,18 @@
+# 멀티모듈 전환기 일지
+
+### 9/18
+- cust-service 옮기기 완료
+
+### 9/19
+<details markdown="1">
+<summary> 완료한 일 </summary>
+ * sms-service 옮기는 중 .. 
+ * smsMapper, smsTemplateMapper 만들고.. common.dto에 있는 entity 코드 걷어내기 힘들구만
+ * cmd+shift+r 사용해서 import 패키지값 모두 변경하기...
+</details>
+
+### 9/22
+<details markdown="1">
+<summary> 완료한 일 </summary>
+ - sms-service queryDsl 의존성 라이브러리 설치
+</details>
