@@ -1,5 +1,6 @@
 package com.oosms.sms.service.filter;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.oosms.sms.config.TestConfig;
@@ -45,7 +46,7 @@ class SmsFilterImplTest {
                 .build();
 
         SmsResult smsResult = smsFilter.filter(sms, CustSmsConsentType.ALL_ALLOW);
-        Assertions.assertThat(smsResult).isEqualTo(SmsResult.SUCCESS);
+        assertThat(smsResult).isEqualTo(SmsResult.SUCCESS);
     }
 
     @Test
@@ -64,7 +65,26 @@ class SmsFilterImplTest {
                 .build();
 
         SmsResult smsResult = smsFilter.filter(sms, CustSmsConsentType.ALL_ALLOW);
-        Assertions.assertThat(smsResult).isEqualTo(SmsResult.NOT_SEND_TIME);
+        assertThat(smsResult).isEqualTo(SmsResult.NOT_SEND_TIME);
+    }
+
+    @Test
+    @DisplayName("발송불가시간대 - 인증문자 : 성공")
+    void sendVerification() {
+        LocalDateTime ldt = LocalDateTime.of(LocalDate.now(), LocalTime.of(21, 0));
+        String sendDt = ldt.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+
+        Long custId = 1L;
+        SmsTemplate smsTemplate = createTemplate("인증번호는...", SmsType.VERIFICATION);
+        Sms sms = Sms.builder()
+                .custId(custId)
+                .smsTemplate(smsTemplate)
+                .sendDt(ldt)
+                .sendPhoneNumber("01098765432")
+                .build();
+
+        SmsResult smsResult = smsFilter.filter(sms, CustSmsConsentType.ALL_ALLOW);
+        assertThat(smsResult).isEqualTo(SmsResult.SUCCESS);
     }
 
     @Test
@@ -84,7 +104,7 @@ class SmsFilterImplTest {
 
         SmsResult smsResult = smsFilter.filter(sms, CustSmsConsentType.ALL_DENY);
 
-        Assertions.assertThat(smsResult).isEqualTo(SmsResult.CUST_REJECT);
+        assertThat(smsResult).isEqualTo(SmsResult.CUST_REJECT);
     }
 
     @Test
@@ -123,7 +143,7 @@ class SmsFilterImplTest {
                 .build();
         SmsResult smsResult = smsFilter.filter(sms3, CustSmsConsentType.ALL_ALLOW);
 
-        Assertions.assertThat(smsResult).isEqualTo(SmsResult.AD_COUNT_OVER);
+        assertThat(smsResult).isEqualTo(SmsResult.AD_COUNT_OVER);
     }
 
     private SmsTemplate createTemplate(String templateContent, SmsType smsType) {

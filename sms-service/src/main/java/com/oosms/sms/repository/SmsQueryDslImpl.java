@@ -1,6 +1,7 @@
 package com.oosms.sms.repository;
 
 import com.oosms.sms.domain.Sms;
+import com.oosms.sms.repository.dto.SmsSearchDto;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -19,18 +20,18 @@ public class SmsQueryDslImpl implements SmsQueryDsl{
     }
 
     @Override
-    public List<Sms> findBySendDt(SmsSearch smsSearch) {
+    public List<Sms> findBySendDt(SmsSearchDto smsSearchDto) {
         BooleanBuilder builder = new BooleanBuilder();
-        if (smsSearch.getStartDt() != null && smsSearch.getEndDt() != null ) {
-            builder.and(sms.sendDt.between(smsSearch.getStartDt(), smsSearch.getEndDt()));
+        if (smsSearchDto.getStartDt() != null && smsSearchDto.getEndDt() != null ) {
+            builder.and(sms.sendDt.between(smsSearchDto.getStartDt(), smsSearchDto.getEndDt()));
         }
 
-        if (smsSearch.getCustId() != null) {
-            builder.and(sms.custId.eq(smsSearch.getCustId()));
+        if (smsSearchDto.getCustId() != null) {
+            builder.and(sms.custId.eq(smsSearchDto.getCustId()));
         }
 
-        if (smsSearch.getSmsType() != null) {
-            builder.and(sms.smsTemplate.smsType.eq(smsSearch.getSmsType()));
+        if (smsSearchDto.getSmsType() != null) {
+            builder.and(sms.smsTemplate.smsType.eq(smsSearchDto.getSmsType()));
         }
 
         return queryFactory

@@ -3,7 +3,7 @@ package com.oosms.sms.service.smsTemplateVarBind;
 import com.oosms.sms.client.ItemApiService;
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.common.dto.ItemGetResponseDto;
-import com.oosms.common.dto.BindingDto;
+import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

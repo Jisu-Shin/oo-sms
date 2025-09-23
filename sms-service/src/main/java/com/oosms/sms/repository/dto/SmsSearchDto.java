@@ -1,4 +1,4 @@
-package com.oosms.sms.repository;
+package com.oosms.sms.repository.dto;
 
 import com.oosms.sms.domain.SmsType;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class SmsSearch {
+public class SmsSearchDto {
 
     private LocalDateTime startDt;
     private LocalDateTime endDt;
@@ -17,7 +17,7 @@ public class SmsSearch {
     private SmsType smsType;
 
     @Builder
-    public SmsSearch(LocalDateTime startDt, LocalDateTime endDt, Long custId, SmsType smsType) {
+    public SmsSearchDto(LocalDateTime startDt, LocalDateTime endDt, Long custId, SmsType smsType) {
         this.startDt = startDt;
         this.endDt = endDt;
         this.custId = custId;

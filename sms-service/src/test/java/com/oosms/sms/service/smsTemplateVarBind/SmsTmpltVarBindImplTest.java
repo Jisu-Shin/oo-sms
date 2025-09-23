@@ -1,18 +1,16 @@
 package com.oosms.sms.service.smsTemplateVarBind;
 
-import com.oosms.common.dto.BindingDto;
+import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
 import com.oosms.common.dto.CustListResponseDto;
 import com.oosms.common.dto.SmsTemplateRequestDto;
 import com.oosms.sms.client.CustApiService;
 import com.oosms.sms.client.ItemApiService;
-import com.oosms.sms.config.TestConfig;
 import com.oosms.sms.domain.*;
 import com.oosms.sms.service.SmsTemplateService;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 

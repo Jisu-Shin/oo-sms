@@ -1,12 +1,14 @@
 package com.oosms.sms.service;
 
 import com.oosms.sms.domain.SmsTemplate;
+import com.oosms.sms.domain.SmsTmpltVarRel;
 import com.oosms.sms.domain.SmsType;
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.common.dto.SmsTemplateListResponseDto;
 import com.oosms.common.dto.SmsTemplateRequestDto;
 import com.oosms.sms.mapper.SmsTemplateMapper;
 import com.oosms.sms.repository.JpaSmsTemplateRepository;
+import com.oosms.sms.repository.JpaSmsTmpltVarRelRepository;
 import com.oosms.sms.repository.JpaTemplateVariableRepository;
 import com.oosms.sms.service.smsTemplateVarBind.TemplateVariableUtils;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class SmsTemplateService {
 
     private final SmsTemplateMapper smsTemplateMapper;
     private final JpaSmsTemplateRepository smsTmpltRepository;
+    private final JpaSmsTmpltVarRelRepository smsTmpltVarRelRepository;
     private final JpaTemplateVariableRepository tmpltVarRepository;
 
     // 템플릿 추가
@@ -54,6 +57,15 @@ public class SmsTemplateService {
         addRelation(koTextList, smsTemplate);
 
         return smsTemplate.getId();
+    }
+
+    @Transactional
+    public void deleteSmsTemplate(Long id) {
+        SmsTemplate smsTemplate = smsTmpltRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 템플릿은 없습니다 : " + id));
+
+        smsTmpltVarRelRepository.deleteBySmsTmpltVarRelId_SmsTmpltId(id);
+        smsTmpltRepository.deleteById(id);
     }
 
     public List<SmsTemplateListResponseDto> findAll() {

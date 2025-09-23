@@ -1,12 +1,11 @@
 package com.oosms.sms.service;
 
+import com.oosms.common.dto.SmsTemplateListResponseDto;
 import com.oosms.common.dto.SmsTemplateRequestDto;
 import com.oosms.sms.config.TestConfig;
-import com.oosms.sms.domain.SmsTemplate;
-import com.oosms.sms.domain.SmsType;
-import com.oosms.sms.domain.TemplateVariable;
-import com.oosms.sms.domain.TemplateVariableType;
+import com.oosms.sms.domain.*;
 import com.oosms.sms.repository.JpaSmsTemplateRepository;
+import com.oosms.sms.repository.JpaSmsTmpltVarRelRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Import(TestConfig.class)
+@Transactional //todo 테스트코드에 transactional 없이 하는 방법...
 class SmsTemplateServiceTest {
 
     @Autowired
@@ -62,9 +63,7 @@ class SmsTemplateServiceTest {
         assertThat(matcher.find()).isFalse();
     }
 
-    //todo 테스트코드에 transactional 없이 하는 방법...
     @Test
-    @Transactional
     public void 템플릿추가() throws Exception {
         //given
         setUp();
@@ -83,7 +82,6 @@ class SmsTemplateServiceTest {
     }
 
     @Test
-    @Transactional
     public void 템플릿생성_템플릿변수없음() throws Exception {
         //given
         setUp();
@@ -93,6 +91,80 @@ class SmsTemplateServiceTest {
         //when
         assertThatThrownBy(()->smsTemplateService.create(requestDto))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void 템플릿수정() throws Exception {
+        //given
+        setUp();
+        String templateContent = "정보성 템플릿 저장 #{고객명}님께 안내해드리는~";
+        SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, SmsType.INFORMAITONAL.name());
+        requestDto.setId(createdTemplateId);
+
+        //when
+        Long updateId = smsTemplateService.update(requestDto);
+
+        //then
+        SmsTemplate updatedTemplate = jpaSmsTemplateRepository.findById(updateId)
+                .orElseThrow(() -> new IllegalArgumentException("템플릿을 찾을 수 없습니다"));
+        assertThat(updatedTemplate.getTmpltVarRelList()).hasSize(1);
+        assertThat(updatedTemplate.getTemplateContent()).isEqualTo(templateContent);
+    }
+
+    @Test
+    public void 템플릿수정_템플릿없음_Exception() throws Exception {
+        //given
+        String templateContent = "없는 템플릿 입니다";
+        SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, SmsType.INFORMAITONAL.name());
+        requestDto.setId(2L);
+
+        //when
+        assertThatThrownBy(() -> smsTemplateService.update(requestDto)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void 템플릿모두조회() throws Exception {
+        //given
+        createTemplateVariable("custName", "고객명", TemplateVariableType.CUST);
+        createTemplateVariable("performanceName", "공연명", TemplateVariableType.ITEM);
+        templateSetUp();
+        templateSetUp();
+
+        //when
+        List<SmsTemplateListResponseDto> all = smsTemplateService.findAll();
+
+        //then
+        assertThat(all.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void 템플릿삭제() throws Exception {
+        //given
+        createTemplateVariable("custName", "고객명", TemplateVariableType.CUST);
+        createTemplateVariable("performanceName", "공연명", TemplateVariableType.ITEM);
+        templateSetUp();
+
+        //when
+        smsTemplateService.deleteSmsTemplate(createdTemplateId);
+
+        //then
+        // 템플릿 삭제 확인
+        assertThat(jpaSmsTemplateRepository.findById(createdTemplateId)).isEmpty();
+
+        // 관계 삭제 확인
+        List<SmsTmpltVarRel> rels = em.createQuery(
+                        "SELECT r FROM SmsTmpltVarRel r WHERE r.smsTemplate.id = :tmpltId",
+                        SmsTmpltVarRel.class)
+                .setParameter("tmpltId", createdTemplateId)
+                .getResultList();
+        assertThat(rels).isEmpty();
+
+        // 변수는 남아 있는지 확인
+        List<TemplateVariable> vars = em.createQuery("SELECT v FROM TemplateVariable v", TemplateVariable.class)
+                .getResultList();
+        assertThat(vars)
+                .extracting("koText")
+                .containsExactlyInAnyOrder("고객명", "공연명");
     }
 
     private void templateVariableSetUp() {
@@ -110,25 +182,6 @@ class SmsTemplateServiceTest {
         String templateContent = "정보성 템플릿 저장 #{고객명}님 안녕하세요 #{공연명}은 ...";
         SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, SmsType.INFORMAITONAL.name());
         createdTemplateId = smsTemplateService.create(requestDto);
-    }
-
-    @Test
-    @Transactional
-    public void 템플릿수정() throws Exception {
-        //given
-        setUp();
-        String templateContent = "정보성 템플릿 저장 #{고객명}님께 안내해드리는~";
-        SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, SmsType.INFORMAITONAL.name());
-        requestDto.setId(createdTemplateId);
-
-        //when
-        Long updateId = smsTemplateService.update(requestDto);
-
-        //then
-        SmsTemplate updatedTemplate = jpaSmsTemplateRepository.findById(updateId)
-                .orElseThrow(() -> new IllegalArgumentException("템플릿을 찾을 수 없습니다"));
-        assertThat(updatedTemplate.getTmpltVarRelList()).hasSize(1);
-        assertThat(updatedTemplate.getTemplateContent()).isEqualTo(templateContent);
     }
 
 }

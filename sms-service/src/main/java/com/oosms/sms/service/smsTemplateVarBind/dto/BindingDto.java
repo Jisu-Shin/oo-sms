@@ -1,4 +1,4 @@
-package com.oosms.sms.service.smsTemplateVarBind;
+package com.oosms.sms.service.smsTemplateVarBind.dto;
 
 import com.oosms.common.dto.SmsSendRequestDto;
 import lombok.AccessLevel;
