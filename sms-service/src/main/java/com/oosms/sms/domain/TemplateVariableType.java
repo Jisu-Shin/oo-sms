@@ -2,6 +2,8 @@ package com.oosms.sms.domain;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @Getter
 public enum TemplateVariableType {
     CUST("고객", "custVariableBindImpl")
@@ -14,5 +16,12 @@ public enum TemplateVariableType {
     TemplateVariableType(String displayName, String className){
         this.displayName = displayName;
         this.className = className;
+    }
+
+    public static TemplateVariableType of(String label) {
+        return Arrays.stream(values())
+                .filter(val -> label.equals(val.displayName))
+                .findFirst()
+                .orElse(null);
     }
 }
