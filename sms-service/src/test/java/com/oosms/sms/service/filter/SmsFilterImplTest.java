@@ -108,6 +108,36 @@ class SmsFilterImplTest {
     }
 
     @Test
+    @DisplayName("광고메시지 정상발송")
+    void sendAdvertiseMessage() {
+        LocalDateTime ldt = LocalDateTime.of(LocalDate.now(),LocalTime.of(19,0));
+        String sendDt = ldt.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+
+        Long custId = 1L;
+        SmsTemplate smsTemplate = createTemplate("광고문자입니다~", SmsType.ADVERTISING);
+        Sms sms1 = Sms.builder()
+                .custId(custId)
+                .smsTemplate(smsTemplate)
+                .smsContent(smsTemplate.getTemplateContent()+"1")
+                .sendDt(ldt)
+                .sendPhoneNumber("01098765432")
+                .build();
+
+        em.persist(sms1);
+
+        Sms sms3 = Sms.builder()
+                .custId(custId)
+                .smsTemplate(smsTemplate)
+                .smsContent(smsTemplate.getTemplateContent()+"3")
+                .sendDt(ldt)
+                .sendPhoneNumber("01098765432")
+                .build();
+        SmsResult smsResult = smsFilter.filter(sms3, CustSmsConsentType.ALL_ALLOW);
+
+        assertThat(smsResult).isEqualTo(SmsResult.SUCCESS);
+    }
+
+    @Test
     @DisplayName("광고메시지 필터링")
     void filterByAdvertise() {
         LocalDateTime ldt = LocalDateTime.of(LocalDate.now(),LocalTime.of(19,0));
