@@ -1,0 +1,279 @@
+# SMS Service 모듈 소프트웨어 요구사항 명세서 (SRS)
+
+## 1. 서론
+
+### 1.1 목적
+이 문서는 OO-SMS 시스템의 **sms-service 모듈**에 대한 소프트웨어 요구사항을 정의하고, 개발팀과 이해관계자 간의 공통된 이해를 제공한다.
+
+### 1.2 범위
+sms-service 모듈은 다음 기능을 제공한다:
+- SMS 발송 및 관리
+- SMS 템플릿 관리
+- 템플릿 변수 관리 및 바인딩
+- SMS 발송 이력 조회
+- SMS 필터링 (시간, 고객동의, 광고횟수 제한)
+
+### 1.3 정의 및 약어
+- **SMS**: Short Message Service  
+- **TDD**: Test Driven Development
+- **SRS**: Software Requirements Specification
+
+## 2. 시스템 구조
+
+### 2.1 주요 컴포넌트
+- **SmsService**: SMS 발송 및 조회 서비스
+- **SmsTemplateService**: SMS 템플릿 관리 서비스
+- **SmsFactory**: SMS 객체 생성 팩토리
+- **SmsFilter**: SMS 발송 필터링 처리
+- **SmsTmpltVarBinder**: 템플릿 변수 바인딩
+
+### 2.2 도메인 엔티티
+- **Sms**: SMS 발송 정보
+- **SmsTemplate**: SMS 템플릿
+- **TemplateVariable**: 템플릿 변수
+- **SmsTmpltVarRel**: 템플릿-변수 관계
+
+## 3. 기능 요구사항
+
+### 3.1 SMS 발송 기능
+
+#### 3.1.1 SMS 발송 (REQ-001)
+**기능**: 고객 리스트와 템플릿을 이용하여 SMS를 발송한다.
+
+**입력**:
+```json
+{
+  "custIdList": [
+    {
+      "custId": 1,
+      "phoneNumber": "01012345678", 
+      "custSmsConsentType": "ALL_ALLOW"
+    }
+  ],
+  "sendDt": "202509061400",
+  "templateId": 1
+}
+```
+
+**처리 과정**:
+1. 입력값 검증 (고객 리스트, 전화번호, 템플릿 존재 여부)
+2. SMS 템플릿 조회
+3. SmsFactory를 통한 SMS 객체 생성
+   - 템플릿 변수 바인딩
+   - SMS 필터링 (시간, 고객동의, 광고제한)
+   - SmsResult 설정
+4. SMS 목록 저장
+
+**출력**: boolean (발송 성공/실패)
+
+#### 3.1.2 SMS 발송 제한 규칙 (REQ-002)
+**SmsResult 종류**:
+- `SUCCESS`: 발송 성공
+- `NOT_SEND_TIME`: 발송 불가 시간 (야간시간대 등)
+- `CUST_REJECT`: 고객 거절 (동의 거부)
+- `AD_COUNT_OVER`: 광고 개수 초과
+
+#### 3.1.3 SMS 발송 이력 조회 (REQ-003)
+**기능**: 특정 기간의 SMS 발송 이력을 조회한다.
+
+**입력**: 
+- startDt: 시작일시 (yyyyMMddHHmm)
+- endDt: 종료일시 (yyyyMMddHHmm)
+
+**출력**: SMS 발송 이력 목록
+```json
+[
+  {
+    "smsId": 1,
+    "sendPhoneNumber": "01012345678",
+    "smsContent": "안녕하세요 홍길동님",
+    "sendDt": "202509061400",
+    "smsType": "INFORMATIONAL", 
+    "smsResult": "SUCCESS"
+  }
+]
+```
+
+### 3.2 SMS 템플릿 관리 기능
+
+#### 3.2.1 SMS 템플릿 생성 (REQ-004)
+**기능**: 새로운 SMS 템플릿을 생성한다.
+
+**입력**:
+```json
+{
+  "templateContent": "안녕하세요 {고객명}님, {상품명} 주문이 완료되었습니다.",
+  "smsType": "INFORMATIONAL"
+}
+```
+
+**처리 과정**:
+1. 템플릿 내용에서 변수 추출 (예: {고객명}, {상품명})
+2. 변수 유효성 검증
+3. 템플릿-변수 관계 설정
+4. 템플릿 저장
+
+#### 3.2.2 SMS 템플릿 수정 (REQ-005)
+**기능**: 기존 SMS 템플릿을 수정한다.
+
+**처리 과정**:
+1. 기존 템플릿 조회
+2. 기존 템플릿-변수 관계 삭제
+3. 새로운 변수 추출 및 관계 설정
+4. 템플릿 업데이트
+
+#### 3.2.3 SMS 템플릿 삭제 (REQ-006)
+**기능**: SMS 템플릿을 삭제한다.
+
+**처리 과정**:
+1. 템플릿-변수 관계 삭제
+2. 템플릿 삭제
+
+#### 3.2.4 SMS 템플릿 목록 조회 (REQ-007)
+**기능**: 전체 SMS 템플릿 목록을 조회한다.
+
+### 3.3 SMS 유형 (REQ-008)
+**SmsType 종류**:
+- `INFORMAITONAL`: 정보성 문자
+- `ADVERTISING`: 광고성 문자  
+- `VERIFICATION`: 인증 문자
+
+### 3.4 템플릿 변수 바인딩 (REQ-009)
+**기능**: 템플릿의 변수를 실제 값으로 치환한다.
+
+**변수 유형**:
+- 고객 관련: {고객명}, {고객등급} 등
+- 상품 관련: {상품명}, {가격} 등
+- 기타: {날짜}, {시간} 등
+
+## 4. 비기능 요구사항
+
+### 4.1 성능 요구사항
+- **NREQ-001**: 대량 SMS 발송 시 스트림 처리를 통한 메모리 효율성 확보
+- **NREQ-002**: 템플릿 변수 바인딩 시 캐싱을 통한 성능 최적화
+
+### 4.2 안정성 요구사항  
+- **NREQ-003**: 트랜잭션 처리를 통한 데이터 일관성 보장
+- **NREQ-004**: 필터링 실패 시에도 SMS 객체는 저장 (결과만 실패로 표시)
+
+### 4.3 확장성 요구사항
+- **NREQ-005**: 새로운 SMS 유형 추가 시 코드 변경 최소화
+- **NREQ-006**: 새로운 필터링 규칙 추가 시 기존 코드에 영향 없음
+
+## 5. API 명세
+
+### 5.1 SMS 발송 API
+```http
+POST /api/sms/send
+Content-Type: application/json
+
+{
+  "custIdList": [
+    {
+      "custId": 1,
+      "phoneNumber": "01012345678",
+      "custSmsConsentType": "ALL_ALLOW"
+    }
+  ],
+  "sendDt": "202509061400",
+  "templateId": 1
+}
+
+Response: boolean
+```
+
+### 5.2 SMS 발송목록 조회 API
+```http
+GET /api/sms/sendList?startDt=202509060900&endDt=202509061800
+
+Response: SmsFindListResponseDto[]
+```
+
+### 5.3 SMS 템플릿 생성 API
+```http
+POST /api/smsTemplates
+Content-Type: application/json
+
+{
+  "templateContent": "안녕하세요 {고객명}님",
+  "smsType": "INFORMATIONAL"
+}
+
+Response: Long (템플릿 ID)
+```
+
+### 5.4 SMS 템플릿 목록 조회 API
+```http
+GET /api/smsTemplates
+
+Response: SmsTemplateListResponseDto[]
+```
+
+## 6. 데이터 모델
+
+### 6.1 Sms 엔티티
+```java
+@Entity
+public class Sms {
+    private Long smsId;              // SMS ID
+    private Long custId;             // 고객 ID
+    private SmsTemplate smsTemplate; // SMS 템플릿
+    private String sendPhoneNumber;   // 발송 전화번호
+    private String smsContent;        // SMS 내용
+    private LocalDateTime sendDt;     // 발송일시
+    private SmsResult smsResult;      // 발송 결과
+}
+```
+
+### 6.2 SmsTemplate 엔티티
+```java
+@Entity
+public class SmsTemplate {
+    private Long id;                    // 템플릿 ID
+    private String templateContent;      // 템플릿 내용
+    private SmsType smsType;            // SMS 유형
+    private List<SmsTmpltVarRel> tmpltVarRelList; // 템플릿-변수 관계
+}
+```
+
+### 6.3 TemplateVariable 엔티티
+```java
+@Entity  
+public class TemplateVariable {
+    private Long id;           // 변수 ID
+    private String koText;     // 한글 변수명 (예: "고객명")
+    private String enText;     // 영문 변수명 (예: "custName")
+    private String description; // 변수 설명
+}
+```
+
+## 7. 제약사항
+
+### 7.1 기술적 제약사항
+- Spring Boot 3.x 기반
+- JPA/Hibernate ORM 사용
+- MapStruct 매퍼 사용
+- 스트림 API를 통한 함수형 프로그래밍
+
+### 7.2 비즈니스 제약사항
+- 템플릿 변수는 사전 정의된 것만 사용 가능
+- SMS 유형별 발송 제한 규칙 준수
+- 고객 동의 상태에 따른 발송 제한
+
+## 8. 검증 방법
+
+### 8.1 단위 테스트
+- 각 서비스 클래스별 독립적인 단위 테스트
+- Mock을 사용한 의존성 격리
+- 테스트 커버리지 90% 이상 목표
+
+### 8.2 통합 테스트
+- API 레벨 통합 테스트
+- 데이터베이스 연동 테스트
+- 전체 워크플로우 테스트
+
+---
+
+**문서 버전**: 2.0  
+**작성일**: 2025년 9월 24일  
+**기반 코드**: sms-service 모듈 실제 구현체

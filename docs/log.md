@@ -35,3 +35,11 @@
   * 명령어 67% 브랜치 76%
 </details>
 
+### 9/24
+
+<details markdown="1">
+<summary> <b>완료한 일</b> </summary>
+
+* 클로드 인텔리제이 MCP를 활용해 sms service 테스트 코드 작성 완료
+</details>
+
