@@ -1,0 +1,64 @@
+{{>layout/home-header}}
+
+<div class="container my-5">
+    {{>layout/bodyheader}}
+
+    <div class="card p-4 shadow-sm border-0 mb-4">
+        <h5 class="card-title fw-bold text-info">예매 내역 검색</h5>
+        <form class="row g-3 align-items-center" action="/view/bookings" method="GET">
+            <div class="col-md-4">
+                <label for="custName" class="visually-hidden">고객명</label>
+                <input type="text" name="custName" class="form-control" id="custName" placeholder="고객명을 입력해주세요" value="">
+            </div>
+            <div class="col-md-4">
+                <label for="bookingStatus" class="visually-hidden">주문상태</label>
+                <select class="form-select" id="bookingStatus" name="bookingStatus">
+                    <option value="">전체 상태</option>
+                    <option value="BOOK">예매 완료</option>
+                    <option value="CANCEL">예매 취소</option>
+                </select>
+            </div>
+            <div class="col-md-auto">
+                <button type="submit" class="btn btn-info">검색</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card p-4 shadow-sm border-0">
+        <h5 class="card-title fw-bold text-center mb-4 text-info">예매 목록</h5>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead>
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">고객명</th>
+                    <th scope="col">공연명</th>
+                    <th scope="col">예매일시</th>
+                    <th scope="col">수량</th>
+                    <th scope="col">상태</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                {{#bookings}}
+                    <tr>
+                        <td>{{bookId}}</td>
+                        <td>{{custName}}</td>
+                        <td>{{itemName}}</td>
+                        <td>{{bookDt}}</td>
+                        <td>{{count}}</td>
+                        <td>{{bookingStatus}}</td>
+                        <td> {{#isBooking}}
+                            <button type="button" class="btn btn-sm btn-danger cancel-booking">취소</button>
+                        {{/isBooking}} </td>
+                    </tr>
+                {{/bookings}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{>layout/bodyfooter}}
+</div>
+
+{{>layout/footer}}

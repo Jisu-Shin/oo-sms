@@ -1,0 +1,107 @@
+{{>layout/home-header}}
+
+<div class="container my-5">
+    {{>layout/bodyheader}}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card p-4 shadow-sm border-0 h-100">
+                <h5 class="card-title fw-bold text-center text-success mb-4">SMS 템플릿 관리</h5>
+
+                <div class="table-responsive mb-4">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>템플릿 내용</th>
+                            <th>SMS 유형</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#templates}}
+                            <tr>
+                                <td><a href="#" class="text-decoration-none">{{id}}</a></td>
+                                <td>{{templateContent}}</td>
+                                <td>{{smsType}}</td>
+                            </tr>
+                        {{/templates}}
+                        </tbody>
+                    </table>
+                </div>
+
+                <form action="/view/smsTemplates/new" method="post">
+                    <div class="mb-3">
+                        <label for="templateContent" class="form-label">SMS 템플릿 내용</label>
+                        <textarea class="form-control" placeholder="내용을 입력하세요" id="templateContent" name ="templateContent"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="smsType" class="form-label">SMS 유형</label>
+                        <select class="form-select" name="smsType" id="smsType">
+                            <option selected>선택해주세요</option>
+                            <option value="INFORMAITONAL">정보성 문자</option>
+                            <option value="ADVERTISING">광고성 문자</option>
+                            <option value="VERIFICATION">인증 문자</option>
+                        </select>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">등록</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card p-4 shadow-sm border-0 h-100">
+                <h5 class="card-title fw-bold text-center text-success mb-4">템플릿 변수 관리</h5>
+
+                <div class="placeholders mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="placeholdersTable">
+                            <thead>
+                            <tr>
+                                <th>분류</th>
+                                <th>영문</th>
+                                <th>국문</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#placeholders}}
+                                <tr>
+                                    <td>{{displayVarType}}</td>
+                                    <td>{{enText}}</td>
+                                    <td>{{koText}}</td>
+                                </tr>
+                            {{/placeholders}}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-danger mt-3 mb-0 text-center">⚠️ 더블 클릭시 SMS 템플릿에 자동 추가 됩니다.</p>
+                </div>
+
+                <form action="/view/templateVariable/new" method="post">
+                    <div class="mb-3">
+                        <label for="variableType" class="form-label">템플릿 변수 유형</label>
+                        <select class="form-select" name="variableType" id="variableType">
+                            <option selected>선택해주세요</option>
+                            <option value="CUST">고객</option>
+                            <option value="ITEM">공연</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="koText" class="form-label">한글 텍스트</label>
+                        <input type="text" class="form-control" placeholder="내용을 입력하세요" id="koText" name ="koText">
+                    </div>
+                    <div class="mb-4">
+                        <label for="enText" class="form-label">영어 텍스트</label>
+                        <input type="text" class="form-control" placeholder="내용을 입력하세요" id="enText" name ="enText">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">등록</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{>layout/bodyfooter}}
+</div> {{>layout/footer}}

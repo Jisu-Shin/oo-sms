@@ -1,0 +1,197 @@
+/*
+ * 공연 예매 관리 시스템 - 디자인 통합 CSS
+ * Pretendard 폰트 및 부트스트랩 5 기반
+ */
+@charset "UTF-8";
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* 색상 및 폰트 변수 정의 */
+:root {
+    --text-color: #333;
+    --background-color: #F8F9FA; /* 밝은 회색 배경 */
+    --card-bg-color: #fff;
+    --border-color: #ddd;
+    --shadow-color: rgba(0, 0, 0, 0.08);
+    --font-weight-regular: 400;
+    --font-weight-bold: 700;
+}
+
+/* 기본 스타일 초기화 */
+* {
+    font-family: 'Pretendard-Regular', sans-serif;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 0;
+    margin: 0;
+}
+
+/* 헤더 스타일 */
+.home-header {
+    background-color: var(--background-color); /* 배경색을 body와 동일하게 설정 */
+    /* box-shadow: none; <- 기존 그림자 제거 (HTML에 없으면 불필요) */
+    /* border-bottom: none; <- 기존 테두리 제거 (HTML에 없으면 불필요) */
+    z-index: 1000;
+}
+
+.home-header .navbar {
+    padding-top: 0.5rem; /* 패딩 값 줄임 */
+    padding-bottom: 0.5rem; /* 패딩 값 줄임 */
+}
+
+.home-header .navbar-brand {
+    color: var(--bs-primary) !important; /* 부트스트랩 primary 색상 사용 */
+    transition: color 0.3s ease;
+    font-weight: var(--font-weight-bold);
+    font-size: 1.25rem; /* 폰트 크기 줄임 */
+}
+
+.home-header .nav-link {
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: var(--font-weight-bold);
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+}
+
+.home-header .nav-link:hover {
+    color: var(--bs-primary); /* 부트스트랩 primary 색상 사용 */
+}
+
+.home-header .navbar-nav .nav-item {
+    margin-left: 1rem;
+}
+
+/* 메인 컨테이너 */
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Jumbotron (홈 페이지 메인 섹션) 스타일 */
+.jumbotron {
+    background-color: var(--card-bg-color);
+    padding: 40px;
+    margin-bottom: 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px var(--shadow-color);
+    text-align: center;
+}
+
+.jumbotron p.lead {
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--bs-primary); /* 부트스트랩 primary 색상 사용 */
+    margin-bottom: 20px;
+}
+
+.jumbotron p {
+    margin-bottom: 25px;
+}
+
+.jumbotron p:not(.lead) {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.placeholders p.text-danger {
+    font-size: 0.75rem; /* 글자 크기 줄임 */
+    white-space: nowrap; /* 줄바꿈 방지 */
+    overflow: hidden; /* 넘치는 내용 숨김 */
+    text-overflow: ellipsis; /* ...으로 표시 */
+}
+
+/* 버튼 스타일 */
+.btn {
+    font-size: 1rem;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-weight: var(--font-weight-regular);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.btn-outline-primary {
+    color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+.btn-outline-primary:hover {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+/* 카드 컴포넌트 스타일 (공연 등록 페이지 등) */
+.card {
+    border: none;
+    border-radius: 12px;
+    background-color: var(--card-bg-color);
+    box-shadow: 0 4px 15px var(--shadow-color);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--bs-primary);
+}
+
+/* 폼 요소 스타일 */
+.form-label {
+    font-weight: var(--font-weight-bold);
+    color: var(--text-color);
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); /* 부트스트랩 primary의 연한 색상 */
+    outline: none;
+}
+
+/* 기타 스타일 */
+.footer {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    color: #777;
+    border-top: 1px solid #e5e5e5;
+    text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+    .container-narrow > hr {
+        margin: 30px 0;
+    }
+}

@@ -1,0 +1,32 @@
+{{>layout/home-header}}
+
+<div class="container my-5">
+    {{>layout/bodyheader}}
+
+    <div class="card p-4 shadow-sm border-0">
+        <h2 class="card-title text-center mb-4 fw-bold text-dark">공연 등록</h2>
+
+        <form action="/view/items/new" method="post">
+            <div class="mb-3">
+                <label for="name" class="form-label">콘서트명</label>
+                <input type="text" class="form-control" placeholder="콘서트명을 입력하세요" id="name" name="name">
+            </div>
+
+            <div class="mb-3">
+                <label for="price" class="form-label">가격</label>
+                <input type="number" class="form-control" id="price" name="price" placeholder="가격을 입력하세요">
+            </div>
+
+            <div class="mb-4">
+                <label for="stockQuantity" class="form-label">수량</label>
+                <input type="number" class="form-control" id="stockQuantity" name="stockQuantity" placeholder="수량을 입력하세요">
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-dark btn-lg fw-bold">등록하기</button>
+            </div>
+        </form>
+    </div>
+
+    {{>layout/bodyfooter}}
+</div> {{>layout/footer}}

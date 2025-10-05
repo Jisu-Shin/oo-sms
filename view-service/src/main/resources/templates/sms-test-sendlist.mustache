@@ -1,0 +1,34 @@
+{{>layout/header}}
+{{>layout/menu}}
+
+<div class="container">
+    <h1>SMS 전체 조회하기</h1>
+    <div class="col-10">
+        <table class="table table-striped">
+            <thead class = "thead strong">
+            <tr>
+                <th>sms_id</th>
+                <th>고객_id</th>
+                <th>전화번호</th>
+                <th>문자유형</th>
+                <th>메시지내용</th>
+                <th>발송결과</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            {{#sms}}
+                <tr>
+                    <td>{{smsId}}</td>
+                    <td>{{custId}}</td>
+                    <td>{{sendPhoneNumber}}</td>
+                    <td>{{smsType}}</td>
+                    <td>{{smsContent}}</td>
+                    <td>{{smsResult}}</td>
+                </tr>
+            {{/sms}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{>layout/footer}}

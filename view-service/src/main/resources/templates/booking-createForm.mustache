@@ -1,0 +1,42 @@
+{{>layout/home-header}}
+
+<div class="container my-5">
+    {{>layout/bodyheader}}
+
+    <div class="card p-4 shadow-sm border-0">
+        <h2 class="card-title text-center mb-4 fw-bold text-info">공연 예매</h2>
+
+        <form action="/view/bookings/new" method="post">
+            <div class="mb-3">
+                <label for="cust" class="form-label">예매 회원</label>
+                <select name="custId" id="cust" class="form-select">
+                    <option value="">회원 선택</option>
+                    {{#custs}}
+                        <option value={{id}}>{{name}}</option>
+                    {{/custs}}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="item" class="form-label">공연명</label>
+                <select name="itemId" id="item" class="form-select">
+                    <option value="">공연 선택</option>
+                    {{#items}}
+                        <option value={{id}}>{{name}}</option>
+                    {{/items}}
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="count" class="form-label">수량</label>
+                <input type="number" class="form-control" id="count" name="count" placeholder="예매 수량을 입력하세요">
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-info btn-lg fw-bold">등록</button>
+            </div>
+        </form>
+    </div>
+
+    {{>layout/bodyfooter}}
+</div> {{>layout/footer}}

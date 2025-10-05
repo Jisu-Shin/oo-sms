@@ -1,0 +1,32 @@
+{{>layout/home-header}}
+
+<div class="container">
+    {{>layout/bodyheader}}
+
+    {{#item}}
+    <form role="form" action="/view/items/{{id}}" method="post">
+        <div class="form-group">
+            <label for="name">id</label>
+            <input type="text" class="form-control" id ="id" name="id" value={{id}} disabled>
+        </div>
+        <div class="form-group">
+            <label for="name">콘서트명</label>
+            <input type="text" class="form-control" id ="name" name="name" value={{name}}>
+        </div>
+        <div class="form-group">
+            <label for="price">가격</label>
+            <input type="number" class="form-control" id="price" name="price" value={{price}}>
+        </div>
+        <div class="form-group">
+            <label for="stockQuantity">수량</label>
+            <input type="number" class="form-control" id="stockQuantity" name="stockQuantity" value={{stockQuantity}}>
+        </div>
+        <button type="submit" class="btn btn-primary">수정</button>
+    </form>
+    {{/item}}
+    <br/>
+
+    {{>layout/bodyfooter}}
+</div> <!-- /container -->
+
+{{>layout/footer}}

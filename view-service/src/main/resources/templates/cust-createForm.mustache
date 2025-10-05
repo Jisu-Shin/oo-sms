@@ -1,0 +1,48 @@
+{{>layout/home-header}}
+
+<div class="container my-5">
+    {{>layout/bodyheader}}
+
+    <div class="card p-4 shadow-sm border-0">
+        <h2 class="card-title text-center mb-4 fw-bold">회원 등록</h2>
+
+        <form action="/view/custs/new" method="post">
+            <div class="mb-3">
+                <label for="name" class="form-label">이름</label>
+                <input type="text" class="form-control" placeholder="이름을 입력하세요" id="name" name="name">
+
+                {{#errors}} {{#isErrorName}}
+                    <div class="text-danger mt-1">{{nameDefaultMsg}}</div>
+                {{/isErrorName}} {{/errors}}
+            </div>
+
+            <div class="mb-3">
+                <label for="phoneNumber" class="form-label">전화번호</label>
+                <input type="text" class="form-control" placeholder="전화번호를 입력하세요" id="phoneNumber" name="phoneNumber">
+
+                {{#errors}} {{#isErrorPhoneNumber}}
+                    <div class="text-danger mt-1">{{phoneNumberDefaultMsg}}</div>
+                {{/isErrorPhoneNumber}} {{/errors}}
+            </div>
+
+            <div class="mb-4">
+                <label for="smsConsentType" class="form-label">고객 SMS 수신 유형</label>
+                <select class="form-select" id="smsConsentType" name="smsConsentType">
+                    <option value="">선택</option>
+                    <option value="ALL_ALLOW">전체 수신</option>
+                    <option value="ALL_DENY">전체 거부</option>
+                </select>
+
+                {{#errors}} {{#isErrorSmsConsentType}}
+                    <div class="text-danger mt-1">{{smsConsentTypeDefaultMsg}}</div>
+                {{/isErrorSmsConsentType}} {{/errors}}
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg fw-bold">등록</button>
+            </div>
+        </form>
+    </div>
+
+    {{>layout/bodyfooter}}
+</div> {{>layout/footer}}
