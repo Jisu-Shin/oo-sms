@@ -1,6 +1,6 @@
 package com.oosms.sms.service.smsTemplateVarBind;
 
-import com.oosms.sms.client.ItemApiService;
+import com.oosms.sms.client.ItemApiServiceForVar;
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.common.dto.ItemGetResponseDto;
 import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
@@ -15,12 +15,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ItemVariableBindImpl implements VariableBinder{
 
-    public final ItemApiService itemApiService;
+    public final ItemApiServiceForVar itemApiServiceForVar;
 
     @Override
     public Map<String, String> getValues(List<TemplateVariable> tmpltVarList, BindingDto bindingDto) {
         Map<String, String> replacements = new HashMap<>();
-        ItemGetResponseDto item = itemApiService.getItem(bindingDto.getItemId());
+        ItemGetResponseDto item = itemApiServiceForVar.getItem(bindingDto.getItemId());
 
         for (TemplateVariable tmpltVar : tmpltVarList) {
             if (tmpltVar.getKoText().equals("공연명")) {

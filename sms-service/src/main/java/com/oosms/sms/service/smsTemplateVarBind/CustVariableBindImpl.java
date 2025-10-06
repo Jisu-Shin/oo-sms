@@ -1,7 +1,7 @@
 package com.oosms.sms.service.smsTemplateVarBind;
 
 import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
-import com.oosms.sms.client.CustApiService;
+import com.oosms.sms.client.CustApiServiceForVar;
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.common.dto.CustListResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustVariableBindImpl implements VariableBinder {
 
-    private final CustApiService custApiService;
+    private final CustApiServiceForVar custApiService;
 
     @Override
     public Map<String, String> getValues(List<TemplateVariable> tmpltVarList, BindingDto bindingDto) {

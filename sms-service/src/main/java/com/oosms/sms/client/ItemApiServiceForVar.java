@@ -11,7 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @RequiredArgsConstructor
-public class ItemApiService {
+public class ItemApiServiceForVar {
 
     private final RestTemplate restTemplate;
 

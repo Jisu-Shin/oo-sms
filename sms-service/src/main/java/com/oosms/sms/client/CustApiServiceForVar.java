@@ -13,7 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CustApiService {
+public class CustApiServiceForVar {
     private final RestTemplate restTemplate;
 
     @Value("${service.cust}")

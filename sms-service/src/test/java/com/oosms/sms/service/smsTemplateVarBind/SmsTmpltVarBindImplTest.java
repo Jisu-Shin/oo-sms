@@ -3,8 +3,8 @@ package com.oosms.sms.service.smsTemplateVarBind;
 import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
 import com.oosms.common.dto.CustListResponseDto;
 import com.oosms.common.dto.SmsTemplateRequestDto;
-import com.oosms.sms.client.CustApiService;
-import com.oosms.sms.client.ItemApiService;
+import com.oosms.sms.client.CustApiServiceForVar;
+import com.oosms.sms.client.ItemApiServiceForVar;
 import com.oosms.sms.domain.*;
 import com.oosms.sms.service.SmsTemplateService;
 import jakarta.persistence.EntityManager;
@@ -45,10 +45,10 @@ class SmsTmpltVarBindImplTest {
     BindingDto bindingDto;
 
     @MockitoBean
-    ItemApiService itemApiService;
+    ItemApiServiceForVar itemApiServiceForVar;
 
     @MockitoBean
-    CustApiService custApiService;
+    CustApiServiceForVar custApiService;
 
 
     @Test

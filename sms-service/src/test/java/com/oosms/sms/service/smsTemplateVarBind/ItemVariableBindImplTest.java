@@ -2,7 +2,7 @@ package com.oosms.sms.service.smsTemplateVarBind;
 
 import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
 import com.oosms.common.dto.ItemGetResponseDto;
-import com.oosms.sms.client.ItemApiService;
+import com.oosms.sms.client.ItemApiServiceForVar;
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.sms.domain.TemplateVariableType;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 class ItemVariableBindImplTest {
 
     @Mock
-    ItemApiService itemApiService;
+    ItemApiServiceForVar itemApiServiceForVar;
 
     @InjectMocks
     ItemVariableBindImpl itemVariableBind;
@@ -41,7 +41,7 @@ class ItemVariableBindImplTest {
         itemGetResponseDto.setName(itemName);
         itemGetResponseDto.setPrice(itemPrice);
 
-        when(itemApiService.getItem(any())).thenReturn(itemGetResponseDto);
+        when(itemApiServiceForVar.getItem(any())).thenReturn(itemGetResponseDto);
 
         List<TemplateVariable> templateVariableList = new ArrayList<>();
         templateVariableList.add(TemplateVariable.create("itemName","공연명", TemplateVariableType.ITEM));
@@ -59,7 +59,7 @@ class ItemVariableBindImplTest {
     public void 공연변수값이_없는경우() throws Exception {
         //given
         ItemGetResponseDto itemGetResponseDto = new ItemGetResponseDto();
-        when(itemApiService.getItem(any())).thenReturn(itemGetResponseDto);
+        when(itemApiServiceForVar.getItem(any())).thenReturn(itemGetResponseDto);
 
         List<TemplateVariable> templateVariableList = new ArrayList<>();
         templateVariableList.add(TemplateVariable.create("itemPlace","공연장소", TemplateVariableType.ITEM));

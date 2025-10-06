@@ -1,11 +1,10 @@
 package com.oosms.sms.config;
 
-import com.oosms.sms.client.CustApiService;
-import com.oosms.sms.client.ItemApiService;
+import com.oosms.sms.client.CustApiServiceForVar;
+import com.oosms.sms.client.ItemApiServiceForVar;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.client.RestTemplate;
 
 @TestConfiguration
 public class TestConfig {
@@ -16,12 +15,12 @@ public class TestConfig {
 //    }
 
     @Bean
-    public CustApiService custApiService() {
-        return Mockito.mock(CustApiService.class);
+    public CustApiServiceForVar custApiService() {
+        return Mockito.mock(CustApiServiceForVar.class);
     }
 
     @Bean
-    public ItemApiService itemApiService() {
-        return Mockito.mock(ItemApiService.class);
+    public ItemApiServiceForVar itemApiService() {
+        return Mockito.mock(ItemApiServiceForVar.class);
     }
 }
