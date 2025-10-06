@@ -10,7 +10,8 @@ public interface BookingMapper {
 
     @Mapping(target = "bookId", source = "id")
     @Mapping(target = "itemName", source = "item.name")
-    @Mapping(target = "bookingStatus", source = "status")
+    @Mapping(target = "bookingStatus", source = "status.displayName")
+    @Mapping(target = "bookDt", dateFormat = "yyyy/MM/dd HH:mm")
     BookingListResponseDto toDto(Booking entity);
 
 }
