@@ -171,12 +171,12 @@ var callback = {
 
     sendSms : function () {
         alert("sms 발송이 완료되었습니다");
-        window.location.href='/view/sms/send';
+        window.location.href='/sms/send';
     } ,
 
     cancelBooking : function () {
         alert("예매가 취소 되었습니다");
-        window.location.href='/view/bookings';
+        window.location.href='/bookings';
     } ,
 
     searchbooking : function (data) {

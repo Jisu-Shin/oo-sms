@@ -16,7 +16,7 @@ import java.util.Collections;
 @Slf4j
 @Controller
 @Profile("test")
-@RequestMapping("/view/bookings")
+@RequestMapping("/bookings")
 public class BookingController {
 
     @GetMapping("")

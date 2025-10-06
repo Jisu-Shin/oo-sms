@@ -16,7 +16,7 @@ import java.util.Collections;
 @Slf4j
 @Profile("test")
 @RequiredArgsConstructor
-@RequestMapping("/view/smsTemplates")
+@RequestMapping("/smsTemplates")
 public class SmsTemplateController {
 
     @GetMapping("/new")

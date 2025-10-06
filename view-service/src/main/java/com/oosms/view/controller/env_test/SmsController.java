@@ -10,7 +10,7 @@ import java.util.Collections;
 
 @Controller
 @Profile("test")
-@RequestMapping("/view/sms")
+@RequestMapping("/sms")
 public class SmsController {
 
      @GetMapping("/send")
