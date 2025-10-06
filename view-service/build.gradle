@@ -33,6 +33,9 @@ dependencies {
 
     // 필수값 검증
     implementation 'org.springframework.boot:spring-boot-starter-validation:2.3.0.RELEASE'
+
+    // 자동 로드
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
 test {
