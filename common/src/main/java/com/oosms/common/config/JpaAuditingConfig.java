@@ -1,4 +1,4 @@
-package com.oosms.config;
+package com.oosms.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
