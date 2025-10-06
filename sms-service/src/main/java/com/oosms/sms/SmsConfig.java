@@ -8,9 +8,9 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @ComponentScan
 public class SmsConfig {
-    @Bean
+//    @Bean
 //    @LoadBalanced
-    public RestTemplate smsRestTemplate() {
-        return new RestTemplate();
-    }
+//    public RestTemplate smsRestTemplate() {
+//        return new RestTemplate();
+//    }
 }

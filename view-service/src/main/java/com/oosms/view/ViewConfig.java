@@ -8,9 +8,8 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @ComponentScan
 public class ViewConfig {
-
-    @Bean
-    public RestTemplate viewRestTemplate() {
-        return new RestTemplate();
-    }
+//    @Bean
+//    public RestTemplate viewRestTemplate() {
+//        return new RestTemplate();
+//    }
 }
