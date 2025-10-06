@@ -11,7 +11,6 @@ public class ItemCreateRequestDto {
     private int price;
     private int stockQuantity;
 
-
     @Override
     public String toString() {
         return "ItemCreateRequestDto{" +
