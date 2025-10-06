@@ -7,10 +7,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @ComponentScan
-public class AppConfig {
+public class ViewConfig {
 
     @Bean
-    public RestTemplate restTemplate() {
+    public RestTemplate viewRestTemplate() {
         return new RestTemplate();
     }
 }
