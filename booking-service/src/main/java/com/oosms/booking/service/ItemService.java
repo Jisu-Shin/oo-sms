@@ -2,6 +2,7 @@ package com.oosms.booking.service;
 
 import com.oosms.booking.domain.Item;
 import com.oosms.booking.mapper.ItemMapper;
+import com.oosms.booking.repository.ItemSearch;
 import com.oosms.common.dto.ItemGetResponseDto;
 import com.oosms.common.dto.ItemUpdateRequestDto;
 import com.oosms.booking.repository.JpaItemRepository;
@@ -22,8 +23,19 @@ public class ItemService {
 
     @Transactional
     public Long saveItem(Item item) {
+        // 중복된 공연 정보 저장 불가
+        validateDuplication(item);
+
         jpaItemRepository.save(item);
         return item.getId();
+    }
+
+    private void validateDuplication(Item item) {
+        ItemSearch itemSearch = new ItemSearch(item.getName(), item.getPrice());
+        List<Item> result = jpaItemRepository.findBySearch(itemSearch);
+        if (result.size() > 0) {
+            throw new IllegalStateException("중복된 공연을 저장할 수 없습니다");
+        }
     }
 
     public List<ItemGetResponseDto> findAll() {
