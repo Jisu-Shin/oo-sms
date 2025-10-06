@@ -2,6 +2,7 @@ package com.oosms.booking.service;
 
 import com.oosms.booking.domain.Item;
 import com.oosms.booking.mapper.ItemMapper;
+import com.oosms.booking.repository.ItemSearch;
 import com.oosms.booking.repository.JpaItemRepository;
 import com.oosms.common.dto.ItemGetResponseDto;
 import com.oosms.common.dto.ItemUpdateRequestDto;
@@ -19,7 +20,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,10 +46,14 @@ class ItemServiceTest {
         item.setPrice(50000);
         item.setStockQuantity(100);
         
+        // 중복 검증: 중복 없음
+        when(jpaItemRepository.findBySearch(any(ItemSearch.class)))
+                .thenReturn(Collections.emptyList());
+        
         // Item이 저장될 때 ID가 설정되도록 모킹
         when(jpaItemRepository.save(any(Item.class))).thenAnswer(invocation -> {
             Item savedItem = invocation.getArgument(0);
-            savedItem.setId(1L); // JPA가 ID를 자동으로 생성하는 것을 시뮬레이션
+            savedItem.setId(1L);
             return savedItem;
         });
 
@@ -59,6 +63,7 @@ class ItemServiceTest {
         // then
         assertThat(savedId).isNotNull();
         assertThat(savedId).isEqualTo(1L);
+        verify(jpaItemRepository).findBySearch(any(ItemSearch.class));
         verify(jpaItemRepository).save(item);
     }
 
@@ -70,6 +75,10 @@ class ItemServiceTest {
         item.setName("뮤지컬 캣츠");
         item.setPrice(50000);
         item.setStockQuantity(100);
+        
+        // 중복 검증: 중복 없음
+        when(jpaItemRepository.findBySearch(any(ItemSearch.class)))
+                .thenReturn(Collections.emptyList());
         
         when(jpaItemRepository.save(any(Item.class))).thenAnswer(invocation -> {
             Item savedItem = invocation.getArgument(0);
@@ -97,6 +106,10 @@ class ItemServiceTest {
         item.setPrice(0);
         item.setStockQuantity(0);
         
+        // 중복 검증: 중복 없음
+        when(jpaItemRepository.findBySearch(any(ItemSearch.class)))
+                .thenReturn(Collections.emptyList());
+        
         when(jpaItemRepository.save(any(Item.class))).thenAnswer(invocation -> {
             Item savedItem = invocation.getArgument(0);
             savedItem.setId(2L);
@@ -119,45 +132,35 @@ class ItemServiceTest {
         Item item = null;
 
         // when & then
-        assertThrows(NullPointerException.class, () -> {
-            itemService.saveItem(item);
-        });
+        assertThatThrownBy(() -> itemService.saveItem(item))
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    @DisplayName("중복된 정보의 Item도 저장 가능하다 (ID만 다름)")
-    void saveItem_DuplicateItem_SavesSuccessfully() {
+    @DisplayName("중복된 Item 저장 시 예외가 발생한다")
+    void saveItem_DuplicateItem_ThrowsException() {
         // given
-        Item item1 = new Item();
-        item1.setName("뮤지컬 캣츠");
-        item1.setPrice(50000);
-        item1.setStockQuantity(100);
+        Item existingItem = new Item();
+        existingItem.setId(1L);
+        existingItem.setName("뮤지컬 캣츠");
+        existingItem.setPrice(50000);
+        existingItem.setStockQuantity(100);
         
-        Item item2 = new Item();
-        item2.setName("뮤지컬 캣츠");
-        item2.setPrice(50000);
-        item2.setStockQuantity(100);
+        Item newItem = new Item();
+        newItem.setName("뮤지컬 캣츠");
+        newItem.setPrice(50000);
+        newItem.setStockQuantity(100);
         
-        when(jpaItemRepository.save(any(Item.class)))
-                .thenAnswer(invocation -> {
-                    Item savedItem = invocation.getArgument(0);
-                    savedItem.setId(1L);
-                    return savedItem;
-                })
-                .thenAnswer(invocation -> {
-                    Item savedItem = invocation.getArgument(0);
-                    savedItem.setId(2L);
-                    return savedItem;
-                });
+        // 중복 검증: 중복 있음
+        when(jpaItemRepository.findBySearch(any(ItemSearch.class)))
+                .thenReturn(List.of(existingItem));
 
-        // when
-        Long savedId1 = itemService.saveItem(item1);
-        Long savedId2 = itemService.saveItem(item2);
-
-        // then
-        assertThat(savedId1).isEqualTo(1L);
-        assertThat(savedId2).isEqualTo(2L);
-        assertThat(savedId1).isNotEqualTo(savedId2);
+        // when & then
+        assertThatThrownBy(() -> itemService.saveItem(newItem))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("중복된 공연을 저장할 수 없습니다");
+        
+        verify(jpaItemRepository).findBySearch(any(ItemSearch.class));
     }
 
     // ========== findAll() 테스트 ==========
