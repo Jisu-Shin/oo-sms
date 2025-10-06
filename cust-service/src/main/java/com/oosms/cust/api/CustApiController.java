@@ -35,6 +35,8 @@ public class CustApiController {
 //            return "cust-createForm";
 //        }
 
+        String cleanPhoneNum = requestDto.getPhoneNumber().replaceAll("-","");
+        requestDto.setPhoneNumber(cleanPhoneNum);
         Long custId = custService.save(requestDto);
         return custId;
     }
