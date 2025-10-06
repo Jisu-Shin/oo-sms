@@ -19,7 +19,17 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
+    // 다른 모듈들 의존성 추가
+    implementation project(':common')
+    implementation project(':sms-service')
+    implementation project(':booking-service')
+    implementation project(':cust-service')
+    implementation project(':view-service')
+    
+    // 웹 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
