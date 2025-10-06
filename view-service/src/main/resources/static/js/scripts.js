@@ -10,10 +10,6 @@ var main = {
             _this.add();
         });
 
-        $('#btn-save').on('click', function () {
-            _this.saveCust();
-        });
-
         $('#btn-close').on('click', function() {
             _this.closeModal();
         });
@@ -50,6 +46,25 @@ var main = {
             _this.searchbooking();
         });
 
+        $('#price').on("input", function() {
+            let price = $(this).val();
+
+            // 1. 쉼표나 문자가 아닌 모든 것 제거 (순수 숫자 문자열만 남김)
+            let cleaned = price.replace(/[^0-9]/g, "");
+
+            // 2. 숫자가 있다면
+            if (cleaned) {
+                // 3. 숫자로 변환 후 toLocaleString()으로 쉼표 추가
+                let formatted = Number(cleaned).toLocaleString('ko-KR');
+
+                // 4. 입력 필드에 적용
+                $(this).val(formatted);
+            } else {
+                // 5. 비어있다면 값도 비움
+                $(this).val('');
+            }
+        });
+
     },
 
     add : function () {
@@ -66,16 +81,6 @@ var main = {
             $('#ipt-phonenumber').val("");
         }
 
-    },
-
-    saveCust : function () {
-        var data = {
-            name: $('#name').val(),
-            phoneNumber: $('#phonenumber').val().replace(/-/g,""),
-            smsConsentType: $('#smsConsentType').val()
-        }
-        console.log("고객저장시작")
-        oper.ajax("POST",data,'/api/custs', callback.saveCust);
     },
 
     sendSms : function () {
@@ -148,12 +153,6 @@ var main = {
 };
 
 var callback = {
-    saveCust : function (data) {
-        console.log("고객저장콜백시작");
-        alert("고객 등록이 완료되었습니다");
-        window.location.href = "/";
-//        $("#frm-reset")[0].reset();
-    } ,
 
     choiceCust : function (data) {
         console.log("고객 조회 완료");
