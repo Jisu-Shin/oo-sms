@@ -1,7 +1,6 @@
 package com.oosms.sms.service;
 
 import com.oosms.sms.domain.SmsTemplate;
-import com.oosms.sms.domain.SmsTmpltVarRel;
 import com.oosms.sms.domain.SmsType;
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.common.dto.SmsTemplateListResponseDto;
@@ -33,6 +32,8 @@ public class SmsTemplateService {
     // 템플릿 추가
     @Transactional
     public Long create(SmsTemplateRequestDto requestDto) {
+        validationNotNull(requestDto);
+
         SmsTemplate smsTemplate = SmsTemplate.createSmsTemplate(requestDto.getTemplateContent(), SmsType.valueOf(requestDto.getSmsType()));
 
         // sms템플릿에서 변수찾기
@@ -43,16 +44,26 @@ public class SmsTemplateService {
         return smsTemplate.getId();
     }
 
+    private void validationNotNull(SmsTemplateRequestDto requestDto) {
+        if (requestDto.getTemplateContent() == null ||
+                requestDto.getTemplateContent().isEmpty()) {
+            throw new IllegalArgumentException("sms템플릿 내용이 없습니다");
+        }
+    }
+
     // 템플릿 수정
     @Transactional
     public Long update(SmsTemplateRequestDto requestDto) {
         SmsTemplate smsTemplate = smsTmpltRepository.findById(requestDto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 템플릿은 없습니다 : " + requestDto.getId()));
 
+        // 템플릿 속성 변경
         smsTemplate.update(requestDto.getTemplateContent(), SmsType.valueOf(requestDto.getSmsType()));
 
+        // 템플릿 관계 초기화
         smsTemplate.clearRelList();
 
+        // 템플릿 관계 새로 생성
         List<String> koTextList = TemplateVariableUtils.extractVariabels(requestDto.getTemplateContent());
         addRelation(koTextList, smsTemplate);
 

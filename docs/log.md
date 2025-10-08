@@ -43,3 +43,17 @@
 * 클로드 인텔리제이 MCP를 활용해 sms service 테스트 코드 작성 완료
 </details>
 
+### 10/6
+
+<details markdown="1">
+<summary> <b>완료한 일</b> </summary>
+
+* view-service 소스코드 옮기기 완료
+* MSA구조 말고 모놀리식 단일 jar로 빌드하기 
+  * 동일 이름 빈 충돌 -> 각 서브 도메인 앞에 붙이기
+  * jpa auditing 클래스 문제
+  * @SpringBootApplication 어노테이션 충돌 문제 
+  * /view 경로 제거 
+  * 공연 금액 ',' 자동 넣기 , 전화번호 '-' 하이픈 제거 및 출력시 보여주기
+</details>
+

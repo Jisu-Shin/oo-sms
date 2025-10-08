@@ -31,6 +31,12 @@ public class TemplateVariable {
         return templateVariable;
     }
 
+    public void update(String enText, String koText, TemplateVariableType variableType) {
+        this.enText = enText;
+        this.koText = koText;
+        this.variableType = variableType;
+    }
+
     @Override
     public String toString() {
         return "TemplateVariable{" +
