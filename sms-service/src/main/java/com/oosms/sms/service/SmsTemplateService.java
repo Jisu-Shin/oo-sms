@@ -44,7 +44,7 @@ public class SmsTemplateService {
         return smsTemplate.getId();
     }
 
-    private static void validationNotNull(SmsTemplateRequestDto requestDto) {
+    private void validationNotNull(SmsTemplateRequestDto requestDto) {
         if (requestDto.getTemplateContent() == null ||
                 requestDto.getTemplateContent().isEmpty()) {
             throw new IllegalArgumentException("sms템플릿 내용이 없습니다");

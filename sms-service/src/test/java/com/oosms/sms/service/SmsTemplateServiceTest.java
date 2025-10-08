@@ -9,14 +9,13 @@ import com.oosms.sms.mapper.SmsTemplateMapper;
 import com.oosms.sms.repository.JpaSmsTemplateRepository;
 import com.oosms.sms.repository.JpaSmsTmpltVarRelRepository;
 import com.oosms.sms.repository.JpaTemplateVariableRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -25,8 +24,7 @@ import java.util.regex.Pattern;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SmsTemplateServiceTest {
@@ -70,7 +68,7 @@ public class SmsTemplateServiceTest {
     }
 
     @Test
-    public void 템플릿추가_정상동작() throws Exception {
+    public void 템플릿추가_정상() throws Exception {
         //given
         String templateContent = "#{고객명}님 안녕하세요 #{공연명}은 ...";
         SmsTemplateRequestDto requestDto = SmsTemplateRequestDto.builder()
@@ -87,9 +85,7 @@ public class SmsTemplateServiceTest {
         // 생성된 SmsTemplate ID 설정
         when(jpaSmsTemplateRepository.save(any())).thenAnswer(invocation -> {
             SmsTemplate savedSmsTemplate = invocation.getArgument(0);
-            Field idField = SmsTemplate.class.getDeclaredField("id");
-            idField.setAccessible(true);
-            idField.set(savedSmsTemplate, 1L);
+            ReflectionTestUtils.setField(savedSmsTemplate, "id", 1L);
             return savedSmsTemplate;
         });
 
@@ -97,8 +93,25 @@ public class SmsTemplateServiceTest {
         Long templateId = service.create(requestDto);
 
         //then
+        System.out.println("templateId = " + templateId);
         assertThat(templateId).isEqualTo(1L);
         verify(jpaSmsTemplateRepository).save(any());
+        verify(jpaTemplateVariableRepository, times(2)).findByKoText(any());
+    }
+
+    @Test
+    public void 템플릿추가_템플릿내용null() throws Exception {
+        //given
+        String templateContent = null;
+        SmsTemplateRequestDto requestDto = SmsTemplateRequestDto.builder()
+                .templateContent(templateContent)
+                .smsType(SmsType.INFORMAITONAL.name())
+                .build();
+
+        //when & then
+        assertThatThrownBy(() -> service.create(requestDto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("sms템플릿 내용이 없습니다");
     }
 
     @Test
@@ -139,11 +152,7 @@ public class SmsTemplateServiceTest {
                 .smsType(SmsType.ADVERTISING.name())
                 .build();
 
-        SmsTemplate smsTemplate = SmsTemplate.createSmsTemplate("기존 템플릿 내용", SmsType.INFORMAITONAL);
-        Field idField = SmsTemplate.class.getDeclaredField("id");
-        idField.setAccessible(true);
-        idField.set(smsTemplate, 10L);
-
+        SmsTemplate smsTemplate = createTestSmsTemplateWithId(10L, "기존 템플릿 내용");
         when(jpaSmsTemplateRepository.findById(10L)).thenReturn(Optional.of(smsTemplate));
 
         //when
@@ -151,5 +160,40 @@ public class SmsTemplateServiceTest {
 
         // then
         assertThat(updatedSmsTemplateId).isEqualTo(10L);
+        assertThat(smsTemplate.getTemplateContent()).isEqualTo(requestDto.getTemplateContent());
+        assertThat(smsTemplate.getSmsType()).isEqualTo(SmsType.ADVERTISING);
+
+        System.out.println("smsTemplate = " + smsTemplate.getTemplateContent());
+        System.out.println("smsTemplate = " + smsTemplate.getSmsType());
+    }
+
+    private static SmsTemplate createTestSmsTemplateWithId(long id, String templateContent) {
+        SmsTemplate smsTemplate = SmsTemplate.createSmsTemplate(templateContent, SmsType.INFORMAITONAL);
+        ReflectionTestUtils.setField(smsTemplate,"id", id);
+        return smsTemplate;
+    }
+
+    @Test
+    public void 템플릿삭제_예외발생() throws Exception {
+        //given
+
+        //when & then
+        assertThatThrownBy(() -> service.deleteSmsTemplate(10L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("해당 템플릿은 없습니다");
+
+    }
+
+    @Test
+    public void 템플릿삭제_정상() throws Exception {
+        //given
+        SmsTemplate smsTemplate = createTestSmsTemplateWithId(10L, "기존 템플릿 내용");
+        when(jpaSmsTemplateRepository.findById(10L)).thenReturn(Optional.of(smsTemplate));
+
+        //when
+        service.deleteSmsTemplate(10L);
+
+        //then
+        verify(jpaSmsTemplateRepository).deleteById(10L);
     }
 }
