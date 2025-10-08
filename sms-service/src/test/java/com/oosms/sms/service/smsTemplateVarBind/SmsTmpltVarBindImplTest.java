@@ -133,7 +133,10 @@ class SmsTmpltVarBindImplTest {
     }
 
     private Long createSmsTmplt(String templateContent, SmsType smsType) {
-        SmsTemplateRequestDto requestDto = new SmsTemplateRequestDto(templateContent, smsType.name());
+        SmsTemplateRequestDto requestDto = SmsTemplateRequestDto.builder()
+                .templateContent(templateContent)
+                .smsType(smsType.name())
+                .build();
         Long smsTmpltId = smsTemplateService.create(requestDto);
 
         return smsTmpltId;

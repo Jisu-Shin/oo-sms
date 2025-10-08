@@ -49,10 +49,13 @@ public class SmsTemplateService {
         SmsTemplate smsTemplate = smsTmpltRepository.findById(requestDto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 템플릿은 없습니다 : " + requestDto.getId()));
 
+        // 템플릿 속성 변경
         smsTemplate.update(requestDto.getTemplateContent(), SmsType.valueOf(requestDto.getSmsType()));
 
+        // 템플릿 관계 초기화
         smsTemplate.clearRelList();
 
+        // 템플릿 관계 새로 생성
         List<String> koTextList = TemplateVariableUtils.extractVariabels(requestDto.getTemplateContent());
         addRelation(koTextList, smsTemplate);
 
