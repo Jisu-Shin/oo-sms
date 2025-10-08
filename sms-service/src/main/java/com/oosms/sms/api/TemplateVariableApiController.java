@@ -29,4 +29,15 @@ public class TemplateVariableApiController {
         return tmpltVarService.findAll();
     }
 
+    @Operation(summary = "템플릿 변수 수정")
+    @PostMapping("/edit")
+    public Long update(@RequestBody TemplateVariableDto requestDto) {
+        return tmpltVarService.update(requestDto);
+    }
+
+    @Operation(summary = "템플릿 변수 삭제")
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        tmpltVarService.delete(id);
+    }
 }
