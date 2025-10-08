@@ -33,4 +33,16 @@ public class SmsTemplateApiController {
         log.info("getSmsTemplates 메소드 시작");
         return smsTemplateService.findAll();
     }
+
+    @Operation(summary = "sms 템플릿 수정")
+    @PostMapping("/edit")
+    public Long update(@RequestBody SmsTemplateRequestDto requestDto) {
+        return smsTemplateService.update(requestDto);
+    }
+
+    @Operation(summary = "sms 템플릿 삭제")
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        smsTemplateService.deleteSmsTemplate(id);
+    }
 }
