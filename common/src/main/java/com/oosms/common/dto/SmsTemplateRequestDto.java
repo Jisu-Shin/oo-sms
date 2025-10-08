@@ -14,7 +14,8 @@ public class SmsTemplateRequestDto {
     private String smsType;
 
     @Builder
-    public SmsTemplateRequestDto(String templateContent, String smsType) {
+    public SmsTemplateRequestDto(Long id, String templateContent, String smsType) {
+        this.id = id;
         this.templateContent = templateContent;
         this.smsType = smsType;
     }
