@@ -33,4 +33,35 @@ public class TemplateVariableService {
                 .map(templateVariableMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public Long update(TemplateVariableDto dto) {
+        validateText(dto);
+
+        TemplateVariable templateVariable = jpaTemplateVariableRepository.findById(dto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 템플릿변수는 없습니다 : " + dto.getId() + " " + dto.getKoText()));
+
+        templateVariable.update(dto.getEnText(), dto.getKoText(), TemplateVariableType.valueOf(dto.getVariableType()));
+
+        return templateVariable.getId();
+    }
+
+    private void validateText(TemplateVariableDto dto) {
+        if(dto.getKoText() == null ||
+            dto.getKoText().isEmpty()) {
+            throw new IllegalArgumentException("템플릿변수 국문명이 없습니다");
+        }
+
+        if(dto.getEnText() == null ||
+                dto.getEnText().isEmpty()) {
+            throw new IllegalArgumentException("템플릿변수 영문명이 없습니다");
+        }
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        TemplateVariable templateVariable = jpaTemplateVariableRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 템플릿변수는 없습니다 : " + id));
+        jpaTemplateVariableRepository.deleteById(id);
+    }
 }
