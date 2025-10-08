@@ -35,14 +35,14 @@ public class SmsTemplateApiController {
     }
 
     @Operation(summary = "sms 템플릿 수정")
-    @PostMapping
+    @PostMapping("/edit")
     public Long update(@RequestBody SmsTemplateRequestDto requestDto) {
         return smsTemplateService.update(requestDto);
     }
 
     @Operation(summary = "sms 템플릿 삭제")
-    @DeleteMapping
-    public void delete(Long id) {
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
         smsTemplateService.deleteSmsTemplate(id);
     }
 }
