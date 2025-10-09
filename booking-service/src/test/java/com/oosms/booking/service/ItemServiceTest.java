@@ -186,13 +186,13 @@ class ItemServiceTest {
         ItemGetResponseDto dto1 = new ItemGetResponseDto();
         dto1.setId(1L);
         dto1.setName("뮤지컬 캣츠");
-        dto1.setPrice(50000);
+        dto1.setPrice("50000");
         dto1.setStockQuantity(100);
 
         ItemGetResponseDto dto2 = new ItemGetResponseDto();
         dto2.setId(2L);
         dto2.setName("오페라의 유령");
-        dto2.setPrice(70000);
+        dto2.setPrice("70000");
         dto2.setStockQuantity(50);
 
         when(jpaItemRepository.findAll()).thenReturn(items);
@@ -286,7 +286,7 @@ class ItemServiceTest {
         ItemGetResponseDto dto = new ItemGetResponseDto();
         dto.setId(itemId);
         dto.setName("뮤지컬 캣츠");
-        dto.setPrice(50000);
+        dto.setPrice("50000");
         dto.setStockQuantity(100);
 
         when(jpaItemRepository.findById(itemId)).thenReturn(Optional.of(item));
@@ -333,7 +333,7 @@ class ItemServiceTest {
         ItemGetResponseDto dto = new ItemGetResponseDto();
         dto.setId(itemId);
         dto.setName("오페라의 유령");
-        dto.setPrice(80000);
+        dto.setPrice("80000");
         dto.setStockQuantity(30);
 
         when(jpaItemRepository.findById(itemId)).thenReturn(Optional.of(item));
