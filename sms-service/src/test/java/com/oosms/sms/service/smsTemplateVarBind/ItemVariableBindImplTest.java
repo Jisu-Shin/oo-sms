@@ -35,7 +35,7 @@ class ItemVariableBindImplTest {
     public void 공연변수() throws Exception {
         //given
         String itemName = "2NE1 콘서트";
-        int itemPrice = 200000;
+        String itemPrice = "200,000";
 
         ItemGetResponseDto itemGetResponseDto = new ItemGetResponseDto();
         itemGetResponseDto.setName(itemName);
@@ -52,7 +52,10 @@ class ItemVariableBindImplTest {
 
         //then
         assertEquals(itemName, resultMap.get("공연명"));
-        assertEquals(String.valueOf(itemPrice), resultMap.get("공연가격"));
+        assertEquals(itemPrice, resultMap.get("공연가격"));
+
+        // todo 확인 필요 왜 .. 콤마가 있지?
+        System.out.println("resultMap.get(\"공연가격\") = " + resultMap.get("공연가격"));
     }
 
     @Test

@@ -7,6 +7,7 @@ import com.oosms.common.dto.ItemUpdateRequestDto;
 import com.oosms.booking.service.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class ItemApiController {
 
     @Operation(summary = "예약 항목 생성")
     @PostMapping()
-    public Long create(@RequestBody ItemCreateRequestDto requestDto) {
+    public Long create(@RequestBody @Valid ItemCreateRequestDto requestDto) {
         return itemService.saveItem(itemMapper.toEntity(requestDto));
     }
 
