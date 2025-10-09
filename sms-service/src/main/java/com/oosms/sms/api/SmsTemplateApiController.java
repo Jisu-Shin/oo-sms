@@ -5,6 +5,7 @@ import com.oosms.common.dto.SmsTemplateRequestDto;
 import com.oosms.sms.service.SmsTemplateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class SmsTemplateApiController {
 
     @Operation(summary="sms 템플릿 생성")
     @PostMapping
-    public Long create(@RequestBody SmsTemplateRequestDto requestDto) {
+    public Long create(@RequestBody @Valid SmsTemplateRequestDto requestDto) {
         log.info("requestDto:{}", requestDto);
         return smsTemplateService.create(requestDto);
     }
@@ -36,7 +37,7 @@ public class SmsTemplateApiController {
 
     @Operation(summary = "sms 템플릿 수정")
     @PostMapping("/edit")
-    public Long update(@RequestBody SmsTemplateRequestDto requestDto) {
+    public Long update(@RequestBody @Valid SmsTemplateRequestDto requestDto) {
         return smsTemplateService.update(requestDto);
     }
 

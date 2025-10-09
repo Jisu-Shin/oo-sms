@@ -37,6 +37,38 @@ class SmsTemplateApiControllerTest {
     @MockitoBean
     private JpaSmsTemplateRepository jpaSmsTemplateRepository;
 
+
+    @Test
+    public void sms템플릿생성_content비어있음_실패() throws Exception {
+        //given
+        SmsTemplateRequestDto requestDto = SmsTemplateRequestDto.builder()
+                .smsType(SmsType.ADVERTISING.getDisplayName())
+                .build();
+
+        //when & then
+        mockMvc.perform(post("/api/smsTemplates")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(requestDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void sms템플릿생성_content가null_실패() throws Exception {
+        //given
+        SmsTemplateRequestDto requestDto = SmsTemplateRequestDto.builder()
+                .templateContent(null)
+                .smsType(SmsType.ADVERTISING.getDisplayName())
+                .build();
+
+        //when & then
+        mockMvc.perform(post("/api/smsTemplates")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(requestDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
     @Test
     public void sms템플릿수정_성공() throws Exception {
         //given
