@@ -1,7 +1,7 @@
 package com.oosms.view.controller;
 
+import com.oosms.common.dto.ErrorResponseDto;
 import com.oosms.view.client.CustApiService;
-import com.oosms.common.dto.CustSaveErrorResponseDto;
 import com.oosms.common.dto.CustSaveRequestDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +13,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -36,38 +39,18 @@ public class CustController {
 
     @PostMapping("/new")
     public String save(@Valid CustSaveRequestDto requestDto, BindingResult result, Model model) {
-
         if (result.hasErrors()) {
-            CustSaveErrorResponseDto errorResponse = getErrorResponse(result);
-            model.addAttribute("errors", errorResponse);
+            Map<String, ErrorResponseDto> errors = new HashMap<>();
+            result.getFieldErrors()
+                    .forEach(error -> errors.put(error.getField(),
+                            new ErrorResponseDto(true, error.getDefaultMessage()))
+                    );
+            model.addAttribute("errors", errors);
             model.addAttribute("requestDto", requestDto);
             return "cust-createForm";
         }
 
         custApiService.createCust(requestDto);
         return "redirect:/custs";
-    }
-
-    private CustSaveErrorResponseDto getErrorResponse(BindingResult result) {
-        CustSaveErrorResponseDto errorResponse = CustSaveErrorResponseDto.builder().build();
-        result.getFieldErrors().forEach(error -> {
-            switch (error.getField()) {
-                case "name" -> {
-                    errorResponse.setErrorName(true);
-                    errorResponse.setNameDefaultMsg(error.getDefaultMessage());
-                }
-
-                case "phoneNumber" -> {
-                    errorResponse.setErrorPhoneNumber(true);
-                    errorResponse.setPhoneNumberDefaultMsg(error.getDefaultMessage());
-                }
-
-                case "smsConsentType" -> {
-                    errorResponse.setErrorSmsConsentType(true);
-                    errorResponse.setSmsConsentTypeDefaultMsg(error.getDefaultMessage());
-                }
-            }
-        });
-        return errorResponse;
     }
 }
