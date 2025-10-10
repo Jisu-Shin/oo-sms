@@ -36,34 +36,38 @@ public class CustController {
 
     @PostMapping("/new")
     public String save(@Valid CustSaveRequestDto requestDto, BindingResult result, Model model) {
+
         if (result.hasErrors()) {
-            CustSaveErrorResponseDto.CustSaveErrorResponseDtoBuilder builder = CustSaveErrorResponseDto.builder();
-            result.getFieldErrors().forEach(error -> {
-                switch (error.getField()) {
-                    case "name" -> {
-                        builder.isErrorName(true);
-                        builder.nameDefaultMsg(error.getDefaultMessage());
-                    }
-
-                    case "phoneNumber" -> {
-                        builder.isErrorPhoneNumber(true);
-                        builder.phoneNumberDefaultMsg(error.getDefaultMessage());
-                    }
-
-                    case "smsConsentType" -> {
-                        builder.isErrorSmsConsentType(true);
-                        builder.smsConsentTypeDefaultMsg(error.getDefaultMessage());
-                    }
-                }
-            });
-
-            model.addAttribute("errors", builder.build());
+            CustSaveErrorResponseDto errorResponse = getErrorResponse(result);
+            model.addAttribute("errors", errorResponse);
             model.addAttribute("requestDto", requestDto);
             return "cust-createForm";
         }
 
         custApiService.createCust(requestDto);
-
         return "redirect:/custs";
+    }
+
+    private CustSaveErrorResponseDto getErrorResponse(BindingResult result) {
+        CustSaveErrorResponseDto errorResponse = CustSaveErrorResponseDto.builder().build();
+        result.getFieldErrors().forEach(error -> {
+            switch (error.getField()) {
+                case "name" -> {
+                    errorResponse.setErrorName(true);
+                    errorResponse.setNameDefaultMsg(error.getDefaultMessage());
+                }
+
+                case "phoneNumber" -> {
+                    errorResponse.setErrorPhoneNumber(true);
+                    errorResponse.setPhoneNumberDefaultMsg(error.getDefaultMessage());
+                }
+
+                case "smsConsentType" -> {
+                    errorResponse.setErrorSmsConsentType(true);
+                    errorResponse.setSmsConsentTypeDefaultMsg(error.getDefaultMessage());
+                }
+            }
+        });
+        return errorResponse;
     }
 }
