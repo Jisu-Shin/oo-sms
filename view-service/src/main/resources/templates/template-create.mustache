@@ -33,6 +33,10 @@
                     <div class="mb-3">
                         <label for="templateContent" class="form-label">SMS 템플릿 내용</label>
                         <textarea class="form-control" placeholder="내용을 입력하세요" id="templateContent" name ="templateContent"></textarea>
+
+                        {{#errors.templateContent}} {{#hasError}}
+                            <div class="text-danger mt-1">{{message}}</div>
+                        {{/hasError}} {{/errors.templateContent}}
                     </div>
                     <div class="mb-4">
                         <label for="smsType" class="form-label">SMS 유형</label>
@@ -42,6 +46,10 @@
                             <option value="ADVERTISING">광고성 문자</option>
                             <option value="VERIFICATION">인증 문자</option>
                         </select>
+
+                        {{#errors.smsType}} {{#hasError}}
+                            <div class="text-danger mt-1">{{message}}</div>
+                        {{/hasError}} {{/errors.smsType}}
                     </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-success">등록</button>
@@ -86,14 +94,28 @@
                             <option value="CUST">고객</option>
                             <option value="ITEM">공연</option>
                         </select>
+
+                        {{#errors.variableType}} {{#hasError}}
+                            <div class="text-danger mt-1">{{message}}</div>
+                        {{/hasError}} {{/errors.variableType}}
                     </div>
                     <div class="mb-3">
                         <label for="koText" class="form-label">한글 텍스트</label>
-                        <input type="text" class="form-control" placeholder="내용을 입력하세요" id="koText" name ="koText">
+                        <input type="text" class="form-control" placeholder="내용을 입력하세요" id="koText" name ="koText"
+                            {{#requestDto}} value="{{requestDto.koText}}"{{/requestDto}}>
+
+                        {{#errors.koText}} {{#hasError}}
+                            <div class="text-danger mt-1">{{message}}</div>
+                        {{/hasError}} {{/errors.koText}}
                     </div>
                     <div class="mb-4">
                         <label for="enText" class="form-label">영어 텍스트</label>
-                        <input type="text" class="form-control" placeholder="내용을 입력하세요" id="enText" name ="enText">
+                        <input type="text" class="form-control" placeholder="내용을 입력하세요" id="enText" name ="enText"
+                            {{#requestDto}} value="{{requestDto.enText}}"{{/requestDto}}>
+
+                        {{#errors.enText}} {{#hasError}}
+                            <div class="text-danger mt-1">{{message}}</div>
+                        {{/hasError}} {{/errors.enText}}
                     </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-success">등록</button>
