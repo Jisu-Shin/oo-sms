@@ -1,24 +1,22 @@
 package com.oosms.common.dto;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 public class TemplateVariableDto {
 
     private Long id;
 
-    @NotNull
+    @NotBlank(message = "영문명은 필수값 입니다.")
     private String enText;
 
-    @NotNull
+    @NotBlank(message = "한글명은 필수값 입니다.")
     private String koText;
 
-    @NotNull
+    @NotBlank(message = "변수유형은 필수값 입니다.")
     private String variableType;
     private String displayVarType;
 
@@ -29,5 +27,16 @@ public class TemplateVariableDto {
         this.koText = koText;
         this.variableType = variableType;
         this.displayVarType = displayVarType;
+    }
+
+    @Override
+    public String toString() {
+        return "TemplateVariableDto{" +
+                "id=" + id +
+                ", enText='" + enText + '\'' +
+                ", koText='" + koText + '\'' +
+                ", variableType='" + variableType + '\'' +
+                ", displayVarType='" + displayVarType + '\'' +
+                '}';
     }
 }

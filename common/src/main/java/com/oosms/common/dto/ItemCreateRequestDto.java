@@ -1,5 +1,6 @@
 package com.oosms.common.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -9,13 +10,13 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 public class ItemCreateRequestDto {
-    @NotNull @NotEmpty
+    @NotEmpty @NotBlank(message = "공연명은 필수값입니다.")
     private String name;
 
-    @NotNull @NotEmpty
+    @NotEmpty @NotBlank(message = "공연가격은 필수값입니다.")
     private String price;
 
-    @NotNull @NotEmpty
+    @NotEmpty @NotBlank(message = "공연재고수량은 필수값입니다.")
     private String stockQuantity;
 
     @Override

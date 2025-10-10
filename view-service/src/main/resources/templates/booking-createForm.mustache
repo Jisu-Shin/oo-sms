@@ -15,6 +15,10 @@
                         <option value={{id}}>{{name}}</option>
                     {{/custs}}
                 </select>
+
+                {{#errors.custId}} {{#hasError}}
+                    <div class="text-danger mt-1">{{message}}</div>
+                {{/hasError}} {{/errors.custId}}
             </div>
 
             <div class="mb-3">
@@ -25,11 +29,19 @@
                         <option value={{id}}>{{name}}</option>
                     {{/items}}
                 </select>
+
+                {{#errors.itemId}} {{#hasError}}
+                    <div class="text-danger mt-1">{{message}}</div>
+                {{/hasError}} {{/errors.itemId}}
             </div>
 
             <div class="mb-4">
                 <label for="count" class="form-label">수량</label>
                 <input type="number" class="form-control" id="count" name="count" placeholder="예매 수량을 입력하세요">
+
+                {{#errors.count}} {{#hasError}}
+                    <div class="text-danger mt-1">{{message}}</div>
+                {{/hasError}} {{/errors.count}}
             </div>
 
             <div class="d-grid">

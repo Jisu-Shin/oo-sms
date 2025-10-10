@@ -10,16 +10,27 @@
             <div class="mb-3">
                 <label for="name" class="form-label">콘서트명</label>
                 <input type="text" class="form-control" placeholder="콘서트명을 입력하세요" id="name" name="name">
+
+                {{#errors.name}} {{#hasError}}
+                    <div class="text-danger mt-1">{{message}}</div>
+                {{/hasError}} {{/errors.name}}
             </div>
 
             <div class="mb-3">
                 <label for="price" class="form-label">가격</label>
                 <input type="text" class="form-control" id="price" name="price" placeholder="가격을 입력하세요">
+
+                {{#errors.price}} {{#hasError}}
+                    <div class="text-danger mt-1">{{message}}</div>
+                {{/hasError}} {{/errors.price}}
             </div>
 
             <div class="mb-4">
                 <label for="stockQuantity" class="form-label">수량</label>
                 <input type="number" class="form-control" id="stockQuantity" name="stockQuantity" placeholder="수량을 입력하세요">
+                {{#errors.stockQuantity}} {{#hasError}}
+                    <div class="text-danger mt-1">{{message}}</div>
+                {{/hasError}} {{/errors.stockQuantity}}
             </div>
 
             <div class="d-grid gap-2">

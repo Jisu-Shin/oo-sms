@@ -9,20 +9,22 @@
         <form action="/custs/new" method="post">
             <div class="mb-3">
                 <label for="name" class="form-label">이름</label>
-                <input type="text" class="form-control" placeholder="이름을 입력하세요" id="name" name="name">
+                <input type="text" class="form-control" placeholder="이름을 입력하세요" id="name" name="name"
+                    {{#requestDto}} value="{{requestDto.name}}"{{/requestDto}}>
 
-                {{#errors}} {{#isErrorName}}
-                    <div class="text-danger mt-1">{{nameDefaultMsg}}</div>
-                {{/isErrorName}} {{/errors}}
+                {{#errors.name}} {{#hasError}}
+                    <div class="text-danger mt-1">{{message}}</div>
+                {{/hasError}} {{/errors.name}}
             </div>
 
             <div class="mb-3">
                 <label for="phoneNumber" class="form-label">전화번호</label>
-                <input type="text" class="form-control" placeholder="전화번호를 입력하세요" id="phoneNumber" name="phoneNumber">
+                <input type="text" class="form-control" placeholder="전화번호를 입력하세요" id="phoneNumber" name="phoneNumber"
+                    {{#requestDto}} value="{{requestDto.phoneNumber}}"{{/requestDto}}>
 
-                {{#errors}} {{#isErrorPhoneNumber}}
-                    <div class="text-danger mt-1">{{phoneNumberDefaultMsg}}</div>
-                {{/isErrorPhoneNumber}} {{/errors}}
+                {{#errors.phoneNumber}} {{#hasError}}
+                    <div class="text-danger mt-1">{{message}}</div>
+                {{/hasError}} {{/errors.phoneNumber}}
             </div>
 
             <div class="mb-4">
@@ -33,9 +35,9 @@
                     <option value="ALL_DENY">전체 거부</option>
                 </select>
 
-                {{#errors}} {{#isErrorSmsConsentType}}
-                    <div class="text-danger mt-1">{{smsConsentTypeDefaultMsg}}</div>
-                {{/isErrorSmsConsentType}} {{/errors}}
+                {{#errors.smsConsentType}} {{#hasError}}
+                    <div class="text-danger mt-1">{{message}}</div>
+                {{/hasError}} {{/errors.smsConsentType}}
             </div>
 
             <div class="d-grid">
