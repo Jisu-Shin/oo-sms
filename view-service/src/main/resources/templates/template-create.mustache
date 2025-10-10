@@ -41,7 +41,7 @@
                     <div class="mb-4">
                         <label for="smsType" class="form-label">SMS 유형</label>
                         <select class="form-select" name="smsType" id="smsType">
-                            <option selected>선택해주세요</option>
+                            <option value="" selected>선택해주세요</option>
                             <option value="INFORMAITONAL">정보성 문자</option>
                             <option value="ADVERTISING">광고성 문자</option>
                             <option value="VERIFICATION">인증 문자</option>
@@ -90,7 +90,7 @@
                     <div class="mb-3">
                         <label for="variableType" class="form-label">템플릿 변수 유형</label>
                         <select class="form-select" name="variableType" id="variableType">
-                            <option selected>선택해주세요</option>
+                            <option value="" selected>선택해주세요</option>
                             <option value="CUST">고객</option>
                             <option value="ITEM">공연</option>
                         </select>
@@ -102,7 +102,7 @@
                     <div class="mb-3">
                         <label for="koText" class="form-label">한글 텍스트</label>
                         <input type="text" class="form-control" placeholder="내용을 입력하세요" id="koText" name ="koText"
-                            {{#requestDto}} value="{{requestDto.koText}}"{{/requestDto}}>
+                            {{#requestDto}} value="{{requestDto.koText}}" {{/requestDto}}>
 
                         {{#errors.koText}} {{#hasError}}
                             <div class="text-danger mt-1">{{message}}</div>
@@ -111,7 +111,7 @@
                     <div class="mb-4">
                         <label for="enText" class="form-label">영어 텍스트</label>
                         <input type="text" class="form-control" placeholder="내용을 입력하세요" id="enText" name ="enText"
-                            {{#requestDto}} value="{{requestDto.enText}}"{{/requestDto}}>
+                            {{#requestDto}} value="{{requestDto.enText}}" {{/requestDto}}>
 
                         {{#errors.enText}} {{#hasError}}
                             <div class="text-danger mt-1">{{message}}</div>

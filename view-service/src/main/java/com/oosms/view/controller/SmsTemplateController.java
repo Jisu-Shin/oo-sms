@@ -45,8 +45,6 @@ public class SmsTemplateController {
                             new ErrorResponseDto(true, error.getDefaultMessage())));
 
             model.addAttribute("errors", errors);
-            model.addAttribute("requestDto", requestDto);
-
             return "template-create";
         }
 

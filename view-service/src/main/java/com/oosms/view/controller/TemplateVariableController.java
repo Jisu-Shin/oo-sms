@@ -6,6 +6,7 @@ import com.oosms.view.client.TemplateVariableApiService;
 import com.oosms.common.dto.TemplateVariableDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/templateVariable")
@@ -31,10 +33,11 @@ public class TemplateVariableController {
                             new ErrorResponseDto(true, error.getDefaultMessage())));
 
             model.addAttribute("errors", errors);
-            model.addAttribute("requestDto", requestDto);
-
             return "template-create";
         }
+
+        log.info("TemplateVariableController.create");
+        log.info("##### requestDto 확인 {}" ,requestDto);
 
         tmpltVarApiService.create(requestDto);
         return "redirect:/smsTemplates/new";

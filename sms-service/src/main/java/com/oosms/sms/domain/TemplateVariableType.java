@@ -17,11 +17,4 @@ public enum TemplateVariableType {
         this.displayName = displayName;
         this.className = className;
     }
-
-    public static TemplateVariableType of(String label) {
-        return Arrays.stream(values())
-                .filter(val -> label.equals(val.displayName))
-                .findFirst()
-                .orElse(null);
-    }
 }

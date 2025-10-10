@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-@Data
+@Getter @Setter
 @NoArgsConstructor
 public class SmsTemplateRequestDto {
 
@@ -18,6 +18,13 @@ public class SmsTemplateRequestDto {
     @NotEmpty(message = "sms유형은 필수값 입니다.")
     @NotBlank(message = "sms유형은 필수값 입니다.")
     private String smsType;
+
+    @Builder
+    public SmsTemplateRequestDto(Long id, String templateContent, String smsType) {
+        this.id = id;
+        this.templateContent = templateContent;
+        this.smsType = smsType;
+    }
 
     @Override
     public String toString() {
