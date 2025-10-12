@@ -67,35 +67,8 @@ public class BookingApiService {
                 new ParameterizedTypeReference<List<BookingListResponseDto>>() {
                 }
         );
-        List<BookingListResponseDto> result = response.getBody().stream()
-                .map(booking -> {
-                    booking.setCustName("");
-                    return booking;
-                })
-                .collect(Collectors.toList());
 
-        // 2. cust 조회
-        Map<Long, String> custMap;
-        if (bookingSearch.getCustName() != null && !bookingSearch.getCustName().isBlank()) {
-            System.out.println("***** bookingSearch.getCustName() = " + bookingSearch.getCustName());
-            custMap = custApiService.getCustId(bookingSearch.getCustName()).stream()
-                    .collect(Collectors.toMap(cust -> cust.getId(), cust -> cust.getName()));
-
-            log.info("custMap.size {}", custMap.size());
-            log.info("custMap {}", custMap);
-            result = result.stream()
-                    .filter(booking -> custMap.containsKey(booking.getCustId()))
-                    .map(booking -> {
-                        booking.setCustName(custMap.get(booking.getCustId()));
-                        return booking;
-                    })
-                    .collect(Collectors.toList());
-
-            log.info("result size {}", result.size());
-            log.info("result {}", result.get(0));
-        }
-
-        return result;
+        return response.getBody();
     }
 
     public Long book(BookingCreateRequestDto requestDto) {
