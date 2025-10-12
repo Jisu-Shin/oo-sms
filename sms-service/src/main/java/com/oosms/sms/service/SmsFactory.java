@@ -1,6 +1,7 @@
 package com.oosms.sms.service;
 
-import com.oosms.common.dto.CustInfo;
+import com.oosms.common.dto.CustListResponseDto;
+import com.oosms.cust.service.CustService;
 import com.oosms.sms.domain.CustSmsConsentType;
 import com.oosms.sms.domain.Sms;
 import com.oosms.sms.domain.SmsResult;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class SmsFactory {
     private final SmsFilter smsFilter;
     private final SmsTmpltVarBinder smsTmpltVarBinder;
+    private final CustService custService;
 
     public List<Sms> createSmsList(SmsTemplate smsTemplate, SmsSendRequestDto requestDto) {
         return requestDto.getCustIdList().stream()
@@ -31,17 +33,21 @@ public class SmsFactory {
                 .collect(Collectors.toList());
     }
 
-    private Sms create(CustInfo cust, SmsTemplate smsTemplate, SmsSendRequestDto requestDto) {
+    private Sms create(Long custId, SmsTemplate smsTemplate, SmsSendRequestDto requestDto) {
         // 1. 문자내용 바인딩
-        String bindSmsContent = smsTmpltVarBinder.bind(smsTemplate, BindingDto.create(cust.getCustId(), requestDto));
+        String bindSmsContent = smsTmpltVarBinder.bind(smsTemplate, BindingDto.create(custId, requestDto));
         log.info("@@@@@ 생성된 문자내용 {}" , bindSmsContent);
 
-        // 2. 문자 엔티티 생성
+        // 2. cust dto 가져오기
+        CustListResponseDto cust = custService.findById(custId);
+        log.info("@@@@@ cust dto 조회완료 {}" , cust);
+
+        // 3. 문자 엔티티 생성
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
         LocalDateTime sendDt = LocalDateTime.parse(requestDto.getSendDt(), formatter);
 
         Sms sms = Sms.builder()
-                .custId(cust.getCustId())
+                .custId(custId)
                 .smsTemplate(smsTemplate)
                 .smsContent(bindSmsContent)
                 .sendDt(sendDt)
@@ -49,11 +55,11 @@ public class SmsFactory {
                 .build();
         log.info("@@@@@ sms 생성완료");
 
-        // 3. 필터링
-        SmsResult smsResult = smsFilter.filter(sms, CustSmsConsentType.of(cust.getCustSmsConsentType()));
+        // 4. 필터링
+        SmsResult smsResult = smsFilter.filter(sms, CustSmsConsentType.of(cust.getConsentType()));
         log.info("@@@@@ sms 필터완료 {}", smsResult);
 
-        // 4. 필터링 결과 세팅
+        // 5. 필터링 결과 세팅
         sms.setSmsResult(smsResult);
         log.info("@@@@@ sms 필터완료 결과 세팅 완료");
 
