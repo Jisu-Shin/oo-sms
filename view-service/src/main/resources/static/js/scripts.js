@@ -145,9 +145,12 @@ var main = {
                         'itemId' : itemId ,
                         'bookingStatus' : 'BOOK'
                        };
+            oper.ajax("GET", data, "/api/bookings/search", callback.searchbooking);
+
+        } else {
+            $("#custBody").empty();
         }
 
-        oper.ajax("GET", data, "/api/bookings/search", callback.searchbooking);
     }
 
 };
