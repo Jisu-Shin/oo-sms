@@ -5,7 +5,6 @@ import com.oosms.booking.domain.BookingStatus;
 import com.oosms.booking.domain.Item;
 import com.oosms.booking.repository.dto.BookingWithCustDto;
 import com.oosms.common.dto.BookingListResponseDto;
-import com.oosms.common.dto.ItemCreateRequestDto;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
@@ -20,10 +19,10 @@ class BookingMapperTest {
     @Test
     public void 예매정보변환보기() throws Exception {
         //given
-        Item item2 = new Item();
-        item2.setName("뮤지컬 비틀쥬스");
-        item2.setPrice(150000);
-        item2.setStockQuantity(100);
+        Item item2 = Item.builder()
+                .name("뮤지컬 비틀쥬스")
+                .price(150000)
+                .stockQuantity(200).build();
         
         Booking booking = Booking.builder()
                 .item(item2)

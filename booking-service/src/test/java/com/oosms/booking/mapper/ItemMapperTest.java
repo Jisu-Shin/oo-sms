@@ -32,8 +32,7 @@ class ItemMapperTest {
     @Test
     public void 금액쉼표추가() throws Exception {
         //given
-        Item item = new Item(); // todo setter 삭제
-        item.setPrice(180000);
+        Item item = Item.builder().price(180000).build();
 
         //when
         ItemGetResponseDto dto = itemMapper.toDto(item);

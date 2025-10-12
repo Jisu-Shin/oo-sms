@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,15 +41,15 @@ class BookingQueryDslImplTest {
         entityManager.persist(cust1);
         entityManager.persist(cust2);
 
-        item1 = new Item();
-        item1.setName("뮤지컬 캣츠");
-        item1.setPrice(50000);
-        item1.setStockQuantity(100);
+        item1 = Item.builder()
+                .name("뮤지컬 캣츠")
+                .price(50000)
+                .stockQuantity(100).build();
 
-        item2 = new Item();
-        item2.setName("뮤지컬 비틀쥬스");
-        item2.setPrice(150000);
-        item2.setStockQuantity(100);
+        item2 = Item.builder()
+                .name("뮤지컬 비틀쥬스")
+                .price(150000)
+                .stockQuantity(200).build();
 
         entityManager.persist(item1);
         entityManager.persist(item2);

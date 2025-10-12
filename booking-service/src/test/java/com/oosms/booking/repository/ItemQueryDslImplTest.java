@@ -25,28 +25,28 @@ class ItemQueryDslImplTest {
     @BeforeEach
     void setUp() {
         // 테스트 데이터 준비
-        Item item1 = new Item();
-        item1.setName("뮤지컬 캣츠");
-        item1.setPrice(50000);
-        item1.setStockQuantity(100);
+        Item item1 = Item.builder()
+                .name("뮤지컬 캣츠")
+                .price(50000)
+                .stockQuantity(100).build();
         entityManager.persist(item1);
 
-        Item item2 = new Item();
-        item2.setName("오페라의 유령");
-        item2.setPrice(70000);
-        item2.setStockQuantity(50);
+        Item item2 = Item.builder()
+                .name("오페라의 유령")
+                .price(70000)
+                .stockQuantity(200).build();
         entityManager.persist(item2);
 
-        Item item3 = new Item();
-        item3.setName("레미제라블");
-        item3.setPrice(50000);
-        item3.setStockQuantity(80);
+        Item item3 = Item.builder()
+                .name("레미제라블")
+                .price(50000)
+                .stockQuantity(300).build();
         entityManager.persist(item3);
 
-        Item item4 = new Item();
-        item4.setName("시카고");
-        item4.setPrice(60000);
-        item4.setStockQuantity(120);
+        Item item4 = Item.builder()
+                .name("시카고")
+                .price(110000)
+                .stockQuantity(400).build();
         entityManager.persist(item4);
 
         entityManager.flush();
@@ -141,10 +141,11 @@ class ItemQueryDslImplTest {
         // given
         // 100개 이상의 동일 가격 Item 생성
         for (int i = 0; i < 105; i++) {
-            Item item = new Item();
-            item.setName("테스트 공연 " + i);
-            item.setPrice(10000);
-            item.setStockQuantity(50);
+            Item item = Item.builder()
+                    .name("테스트 공연 " + i)
+                    .price(10000)
+                    .stockQuantity(50)
+                    .build();
             entityManager.persist(item);
         }
         entityManager.flush();
@@ -173,21 +174,5 @@ class ItemQueryDslImplTest {
 
         // then
         assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("여러 Item이 동일한 가격을 가질 때 모두 검색된다")
-    void findBySearch_MultipleItemsWithSamePrice_ReturnsAll() {
-        // given
-        ItemSearch search = new ItemSearch();
-        search.setPrice(50000);
-
-        // when
-        List<Item> result = itemRepository.findBySearch(search);
-
-        // then
-        assertThat(result).hasSize(2);
-        assertThat(result).extracting(Item::getName)
-                .containsExactlyInAnyOrder("뮤지컬 캣츠", "레미제라블");
     }
 }

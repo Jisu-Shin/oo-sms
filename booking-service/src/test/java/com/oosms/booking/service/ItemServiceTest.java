@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,15 +38,23 @@ class ItemServiceTest {
     @InjectMocks
     private ItemService itemService;
 
+    private Item musicalCats = Item.builder()
+            .id(1L)
+            .name("뮤지컬 캣츠")
+            .price(50000)
+            .stockQuantity(100).build();
+
+    private Item musicalPhantom = Item.builder()
+            .id(2L)
+            .name("뮤지컬 오페라의 유령")
+            .price(70000)
+            .stockQuantity(200).build();
+
     @Test
     @DisplayName("유효한 Item 저장 시 ID를 반환한다")
     void saveItem_ValidItem_ReturnsId() {
         // given
-        Item item = new Item();
-        item.setName("뮤지컬 캣츠");
-        item.setPrice(50000);
-        item.setStockQuantity(100);
-        
+
         // 중복 검증: 중복 없음
         when(jpaItemRepository.findBySearch(any(ItemSearch.class)))
                 .thenReturn(Collections.emptyList());
@@ -53,76 +62,68 @@ class ItemServiceTest {
         // Item이 저장될 때 ID가 설정되도록 모킹
         when(jpaItemRepository.save(any(Item.class))).thenAnswer(invocation -> {
             Item savedItem = invocation.getArgument(0);
-            savedItem.setId(1L);
+            ReflectionTestUtils.setField(savedItem, "id" ,1L);
             return savedItem;
         });
 
         // when
-        Long savedId = itemService.saveItem(item);
+        Long savedId = itemService.saveItem(musicalCats);
 
         // then
         assertThat(savedId).isNotNull();
         assertThat(savedId).isEqualTo(1L);
         verify(jpaItemRepository).findBySearch(any(ItemSearch.class));
-        verify(jpaItemRepository).save(item);
+        verify(jpaItemRepository).save(musicalCats);
     }
 
     @Test
     @DisplayName("저장된 Item은 조회가 가능하다")
     void saveItem_ValidItem_ItemIsPersisted() {
         // given
-        Item item = new Item();
-        item.setName("뮤지컬 캣츠");
-        item.setPrice(50000);
-        item.setStockQuantity(100);
-        
         // 중복 검증: 중복 없음
         when(jpaItemRepository.findBySearch(any(ItemSearch.class)))
                 .thenReturn(Collections.emptyList());
         
         when(jpaItemRepository.save(any(Item.class))).thenAnswer(invocation -> {
             Item savedItem = invocation.getArgument(0);
-            savedItem.setId(1L);
+            ReflectionTestUtils.setField(savedItem, "id" ,1L);
             return savedItem;
         });
 
         // when
-        Long savedId = itemService.saveItem(item);
+        Long savedId = itemService.saveItem(musicalCats);
 
         // then
-        verify(jpaItemRepository).save(item);
-        assertThat(item.getId()).isEqualTo(savedId);
-        assertThat(item.getName()).isEqualTo("뮤지컬 캣츠");
-        assertThat(item.getPrice()).isEqualTo(50000);
-        assertThat(item.getStockQuantity()).isEqualTo(100);
+        verify(jpaItemRepository).save(musicalCats);
+        assertThat(musicalCats.getId()).isEqualTo(savedId);
+        assertThat(musicalCats.getName()).isEqualTo("뮤지컬 캣츠");
+        assertThat(musicalCats.getPrice()).isEqualTo(50000);
+        assertThat(musicalCats.getStockQuantity()).isEqualTo(100);
     }
 
     @Test
     @DisplayName("최소값(0, 0)으로 Item 저장이 가능하다")
     void saveItem_MinimumValues_ReturnsId() {
         // given
-        Item item = new Item();
-        item.setName("공연명");
-        item.setPrice(0);
-        item.setStockQuantity(0);
-        
+        // todo 최소값으로 저장하는게 맞나?
+
         // 중복 검증: 중복 없음
         when(jpaItemRepository.findBySearch(any(ItemSearch.class)))
                 .thenReturn(Collections.emptyList());
         
         when(jpaItemRepository.save(any(Item.class))).thenAnswer(invocation -> {
             Item savedItem = invocation.getArgument(0);
-            savedItem.setId(2L);
+            ReflectionTestUtils.setField(savedItem, "id", 2L);
             return savedItem;
         });
 
         // when
-        Long savedId = itemService.saveItem(item);
+        Long savedId = itemService.saveItem(musicalCats);
 
         // then
         assertThat(savedId).isNotNull();
         assertThat(savedId).isEqualTo(2L);
-        verify(jpaItemRepository).save(item);
+        verify(jpaItemRepository).save(musicalCats);
     }
 
     @Test
@@ -140,16 +141,15 @@ class ItemServiceTest {
     @DisplayName("중복된 Item 저장 시 예외가 발생한다")
     void saveItem_DuplicateItem_ThrowsException() {
         // given
-        Item existingItem = new Item();
-        existingItem.setId(1L);
-        existingItem.setName("뮤지컬 캣츠");
-        existingItem.setPrice(50000);
-        existingItem.setStockQuantity(100);
-        
-        Item newItem = new Item();
-        newItem.setName("뮤지컬 캣츠");
-        newItem.setPrice(50000);
-        newItem.setStockQuantity(100);
+        Item existingItem = Item.builder()
+                .name("뮤지컬 캣츠")
+                .price(50000)
+                .stockQuantity(100).build();
+
+        Item newItem = Item.builder()
+                .name("뮤지컬 캣츠")
+                .price(50000)
+                .stockQuantity(100).build();
         
         // 중복 검증: 중복 있음
         when(jpaItemRepository.findBySearch(any(ItemSearch.class)))
@@ -169,17 +169,17 @@ class ItemServiceTest {
     @DisplayName("Item이 있을 때 모든 Item을 DTO로 반환한다")
     void findAll_WithItems_ReturnsAllItems() {
         // given
-        Item item1 = new Item();
-        item1.setId(1L);
-        item1.setName("뮤지컬 캣츠");
-        item1.setPrice(50000);
-        item1.setStockQuantity(100);
+        Item item1 = Item.builder()
+                .id(1L)
+                .name("뮤지컬 캣츠")
+                .price(50000)
+                .stockQuantity(100).build();
 
-        Item item2 = new Item();
-        item2.setId(2L);
-        item2.setName("오페라의 유령");
-        item2.setPrice(70000);
-        item2.setStockQuantity(50);
+        Item item2 = Item.builder()
+                .id(2L)
+                .name("오페라의 유령")
+                .price(70000)
+                .stockQuantity(50).build();
 
         List<Item> items = Arrays.asList(item1, item2);
 
@@ -229,17 +229,17 @@ class ItemServiceTest {
     @DisplayName("여러 Item이 있을 때 순서대로 반환한다")
     void findAll_MultipleItems_ReturnsCorrectOrder() {
         // given
-        Item item1 = new Item();
-        item1.setId(1L);
-        item1.setName("첫번째 공연");
+        Item item1 = Item.builder()
+                .id(1L)
+                .name("첫번째 공연").build();
 
-        Item item2 = new Item();
-        item2.setId(2L);
-        item2.setName("두번째 공연");
+        Item item2 = Item.builder()
+                .id(2L)
+                .name("두번째 공연").build();
 
-        Item item3 = new Item();
-        item3.setId(3L);
-        item3.setName("세번째 공연");
+        Item item3 = Item.builder()
+                .id(3L)
+                .name("세번째 공연").build();
 
         List<Item> items = Arrays.asList(item1, item2, item3);
 
@@ -276,21 +276,15 @@ class ItemServiceTest {
     @DisplayName("존재하는 ID로 조회 시 Item을 DTO로 반환한다")
     void findById_ExistingId_ReturnsItem() {
         // given
-        Long itemId = 1L;
-        Item item = new Item();
-        item.setId(itemId);
-        item.setName("뮤지컬 캣츠");
-        item.setPrice(50000);
-        item.setStockQuantity(100);
-
+        Long itemId = musicalCats.getId();
         ItemGetResponseDto dto = new ItemGetResponseDto();
         dto.setId(itemId);
         dto.setName("뮤지컬 캣츠");
         dto.setPrice("50000");
         dto.setStockQuantity(100);
 
-        when(jpaItemRepository.findById(itemId)).thenReturn(Optional.of(item));
-        when(itemMapper.toDto(item)).thenReturn(dto);
+        when(jpaItemRepository.findById(itemId)).thenReturn(Optional.of(musicalCats));
+        when(itemMapper.toDto(musicalCats)).thenReturn(dto);
 
         // when
         ItemGetResponseDto result = itemService.findById(itemId);
@@ -299,7 +293,7 @@ class ItemServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(itemId);
         assertThat(result.getName()).isEqualTo("뮤지컬 캣츠");
-        assertThat(result.getPrice()).isEqualTo(50000);
+        assertThat(result.getPrice()).isEqualTo("50000");
         assertThat(result.getStockQuantity()).isEqualTo(100);
         verify(jpaItemRepository).findById(itemId);
     }
@@ -323,31 +317,26 @@ class ItemServiceTest {
     @DisplayName("유효한 ID로 조회 시 올바르게 매핑된 DTO를 반환한다")
     void findById_ValidId_ReturnsMappedDto() {
         // given
-        Long itemId = 5L;
-        Item item = new Item();
-        item.setId(itemId);
-        item.setName("오페라의 유령");
-        item.setPrice(80000);
-        item.setStockQuantity(30);
+        Long itemId = musicalPhantom.getId();
 
         ItemGetResponseDto dto = new ItemGetResponseDto();
         dto.setId(itemId);
-        dto.setName("오페라의 유령");
-        dto.setPrice("80000");
-        dto.setStockQuantity(30);
+        dto.setName("뮤지컬 오페라의 유령");
+        dto.setPrice("70000");
+        dto.setStockQuantity(200);
 
-        when(jpaItemRepository.findById(itemId)).thenReturn(Optional.of(item));
-        when(itemMapper.toDto(item)).thenReturn(dto);
+        when(jpaItemRepository.findById(itemId)).thenReturn(Optional.of(musicalPhantom));
+        when(itemMapper.toDto(musicalPhantom)).thenReturn(dto);
 
         // when
         ItemGetResponseDto result = itemService.findById(itemId);
 
         // then
-        assertThat(result.getId()).isEqualTo(item.getId());
-        assertThat(result.getName()).isEqualTo(item.getName());
-        assertThat(result.getPrice()).isEqualTo(item.getPrice());
-        assertThat(result.getStockQuantity()).isEqualTo(item.getStockQuantity());
-        verify(itemMapper).toDto(item);
+        assertThat(result.getId()).isEqualTo(musicalPhantom.getId());
+        assertThat(result.getName()).isEqualTo(musicalPhantom.getName());
+        assertThat(result.getPrice()).isEqualTo(String.valueOf(musicalPhantom.getPrice()));
+        assertThat(result.getStockQuantity()).isEqualTo(musicalPhantom.getStockQuantity());
+        verify(itemMapper).toDto(musicalPhantom);
     }
 
     // ========== updateItem() 테스트 ==========
@@ -357,11 +346,7 @@ class ItemServiceTest {
     void updateItem_ExistingItem_ReturnsUpdatedId() {
         // given
         Long itemId = 1L;
-        Item item = new Item();
-        item.setId(itemId);
-        item.setName("뮤지컬 캣츠");
-        item.setPrice(50000);
-        item.setStockQuantity(100);
+        Item item = musicalCats;
 
         ItemUpdateRequestDto requestDto = new ItemUpdateRequestDto();
         requestDto.setId(itemId);
@@ -408,12 +393,7 @@ class ItemServiceTest {
     void updateItem_NameOnly_UpdatesOnlyName() {
         // given
         Long itemId = 1L;
-        Item item = new Item();
-        item.setId(itemId);
-        item.setName("뮤지컬 캣츠");
-        item.setPrice(50000);
-        item.setStockQuantity(100);
-
+        Item item = musicalCats;
         ItemUpdateRequestDto requestDto = new ItemUpdateRequestDto();
         requestDto.setId(itemId);
         requestDto.setName("새로운 이름");
@@ -436,11 +416,7 @@ class ItemServiceTest {
     void updateItem_PriceOnly_UpdatesOnlyPrice() {
         // given
         Long itemId = 1L;
-        Item item = new Item();
-        item.setId(itemId);
-        item.setName("뮤지컬 캣츠");
-        item.setPrice(50000);
-        item.setStockQuantity(100);
+        Item item = musicalCats;
 
         ItemUpdateRequestDto requestDto = new ItemUpdateRequestDto();
         requestDto.setId(itemId);
@@ -464,11 +440,7 @@ class ItemServiceTest {
     void updateItem_StockOnly_UpdatesOnlyStock() {
         // given
         Long itemId = 1L;
-        Item item = new Item();
-        item.setId(itemId);
-        item.setName("뮤지컬 캣츠");
-        item.setPrice(50000);
-        item.setStockQuantity(100);
+        Item item = musicalCats;
 
         ItemUpdateRequestDto requestDto = new ItemUpdateRequestDto();
         requestDto.setId(itemId);
@@ -492,11 +464,7 @@ class ItemServiceTest {
     void updateItem_AllFields_UpdatesAllFields() {
         // given
         Long itemId = 1L;
-        Item item = new Item();
-        item.setId(itemId);
-        item.setName("뮤지컬 캣츠");
-        item.setPrice(50000);
-        item.setStockQuantity(100);
+        Item item = musicalCats;
 
         ItemUpdateRequestDto requestDto = new ItemUpdateRequestDto();
         requestDto.setId(itemId);

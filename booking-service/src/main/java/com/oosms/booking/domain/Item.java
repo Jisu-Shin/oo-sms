@@ -1,6 +1,7 @@
 package com.oosms.booking.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,6 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="dtype")
 @Getter
-@Setter
 public class Item {
     @Id
     @GeneratedValue
@@ -24,6 +24,18 @@ public class Item {
 
     @ManyToMany(mappedBy = "items")
     private List<Category> categories = new ArrayList<>();
+
+    @Builder
+    private Item(Long id, String name, int price, int stockQuantity, List<Category> categories) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.categories = categories;
+    }
+
+    public Item() {
+    }
 
     //==연관관계==//
 
