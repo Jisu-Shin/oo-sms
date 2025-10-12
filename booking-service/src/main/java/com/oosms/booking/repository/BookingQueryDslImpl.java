@@ -1,6 +1,7 @@
 package com.oosms.booking.repository;
 
 import com.oosms.booking.domain.Booking;
+import com.oosms.booking.repository.dto.BookingWithCustDto;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -35,5 +36,10 @@ public class BookingQueryDslImpl implements BookingQueryDsl {
                 .where(builder)
                 .limit(100)
                 .fetch();
+    }
+
+    @Override
+    public List<BookingWithCustDto> findBookingWithCustInfo(BookingSearch bookingSearch) {
+        return List.of();
     }
 }
