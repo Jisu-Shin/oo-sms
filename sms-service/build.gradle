@@ -14,6 +14,8 @@ repositories {
 
 dependencies {
     implementation project(":common")
+    implementation project(":cust-service")
+    testImplementation project(":cust-service")
 
     // lombok 라이브러리 추가 시작
     implementation 'org.projectlombok:lombok:1.18.30'
