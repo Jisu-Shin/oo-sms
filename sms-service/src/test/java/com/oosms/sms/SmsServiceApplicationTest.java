@@ -4,7 +4,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootApplication(scanBasePackages = {"com.oosms.sms", "com.oosms.common"})
+@SpringBootApplication(scanBasePackages = {"com.oosms"})
 class SmsServiceApplicationTest {
 
 }
