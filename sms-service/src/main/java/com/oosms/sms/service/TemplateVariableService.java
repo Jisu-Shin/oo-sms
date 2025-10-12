@@ -22,7 +22,7 @@ public class TemplateVariableService {
 
     @Transactional
     public Long create(TemplateVariableDto dto) {
-        TemplateVariable templateVariable = TemplateVariable.create(dto.getEnText(), dto.getKoText(), TemplateVariableType.valueOf(dto.getVariableType()));
+        TemplateVariable templateVariable = TemplateVariable.create(dto.getEnText(), dto.getKoText(), TemplateVariableType.of(dto.getVariableType()));
         jpaTemplateVariableRepository.save(templateVariable);
 
         return templateVariable.getId();
