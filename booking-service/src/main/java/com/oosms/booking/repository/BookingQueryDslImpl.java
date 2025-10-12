@@ -59,6 +59,7 @@ public class BookingQueryDslImpl implements BookingQueryDsl {
         return queryFactory
                 .select(new QBookingWithCustDto(
                         booking,
+                        cust.id,
                         cust.name
                 ))
                 .from(booking)

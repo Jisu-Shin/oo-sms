@@ -7,15 +7,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 public class BookingWithCustDto {
     private Booking booking;
+    private Long custId;
     private String custName;
 
     @QueryProjection
-    public BookingWithCustDto(Booking booking, String custName) {
+    public BookingWithCustDto(Booking booking, Long custId, String custName) {
         this.booking = booking;
+        this.custId = custId;
         this.custName = custName;
     }
 }
