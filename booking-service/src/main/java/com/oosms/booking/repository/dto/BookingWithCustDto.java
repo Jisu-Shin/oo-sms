@@ -10,7 +10,12 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 public class BookingWithCustDto {
-    private BookingStatus bookingStatus; // 예약상태 [BOOK, CANCEL]
-    private Long itemId;
+    private Booking booking;
     private String custName;
+
+    @QueryProjection
+    public BookingWithCustDto(Booking booking, String custName) {
+        this.booking = booking;
+        this.custName = custName;
+    }
 }
