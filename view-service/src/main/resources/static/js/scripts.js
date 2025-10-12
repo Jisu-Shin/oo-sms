@@ -115,7 +115,7 @@ var main = {
                 sendDt : oper.getTodayDt(),
                 itemId : itemId
                 }
-        oper.ajax("POST",data,'/sms/send-by-cust-ids', callback.sendSms);
+        oper.ajax("POST",data, '/api/sms/send', callback.sendSms);
     },
 
     closeModal : function() {
@@ -145,9 +145,12 @@ var main = {
                         'itemId' : itemId ,
                         'bookingStatus' : 'BOOK'
                        };
+            oper.ajax("GET", data, "/api/bookings/search", callback.searchbooking);
+
+        } else {
+            $("#custBody").empty();
         }
 
-        oper.ajax("GET", data, "/api/bookings/search", callback.searchbooking);
     }
 
 };

@@ -53,7 +53,7 @@ class SmsApiControllerTest {
     public void sendSms() throws Exception {
         //given
         SmsSendRequestDto requestDto = SmsSendRequestDto.builder()
-                .custIdList(List.of(new CustInfo(1L, "01012345678", CustSmsConsentType.ALL_ALLOW.toString())))
+                .custIdList(List.of(1L))
                 .sendDt("202509060928")
                 .templateId(1L)
                 .build();

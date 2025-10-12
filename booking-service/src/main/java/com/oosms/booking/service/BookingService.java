@@ -60,7 +60,7 @@ public class BookingService {
      * 검색
      */
     public List<BookingListResponseDto> findBooking(BookingSearch bookingSearch) {
-        return jpaBookingRepository.findAll(bookingSearch).stream()
+        return jpaBookingRepository.findBookingWithCustInfo(bookingSearch).stream()
                 .map(bookingMapper::toDto)
                 .collect(Collectors.toList());
     }

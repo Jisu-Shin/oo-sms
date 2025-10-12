@@ -49,12 +49,6 @@ public class SmsService {
         if(requestDto.getCustIdList().isEmpty()) {
             throw new IllegalArgumentException("sms 발송할 고객이 없습니다.");
         }
-
-        for (CustInfo custInfo : requestDto.getCustIdList()) {
-            if (custInfo.getPhoneNumber().isEmpty()) {
-                throw new IllegalArgumentException("고객의 전화번호가 비어있습니다");
-            }
-        }
     }
 
     /**

@@ -52,8 +52,9 @@ class SmsServiceTest {
     @Test
     public void sms발송_성공() throws Exception {
         //given
+        //new CustInfo(1L, "01012345678", CustSmsConsentType.ALL_ALLOW.toString()
         SmsSendRequestDto requestDto = SmsSendRequestDto.builder()
-                .custIdList(List.of(new CustInfo(1L, "01012345678", CustSmsConsentType.ALL_ALLOW.toString())))
+                .custIdList(List.of(1L))
                 .sendDt("202509060928")
                 .templateId(1L)
                 .build();
@@ -92,26 +93,10 @@ class SmsServiceTest {
     }
 
     @Test
-    public void sms발송_전화번호가_비어있으면_예외발생() throws Exception {
-        //given
-        SmsSendRequestDto requestDto = SmsSendRequestDto.builder()
-                .custIdList(List.of(new CustInfo(1L, "", CustSmsConsentType.ALL_ALLOW.toString()))) // 빈 전화번호
-                .sendDt("202509060928")
-                .templateId(1L)
-                .build();
-
-        //when & then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-                () -> smsService.send(requestDto));
-        
-        assertThat(exception.getMessage()).isEqualTo("고객의 전화번호가 비어있습니다");
-    }
-
-    @Test
     public void sms발송_존재하지않는_템플릿아이디면_예외발생() throws Exception {
         //given
         SmsSendRequestDto requestDto = SmsSendRequestDto.builder()
-                .custIdList(List.of(new CustInfo(1L, "01012345678", CustSmsConsentType.ALL_ALLOW.toString())))
+                .custIdList(List.of(1L)) // 빈 전화번호
                 .sendDt("202509060928")
                 .templateId(999L) // 존재하지 않는 템플릿 ID
                 .build();

@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class SmsSendRequestDto {
 
-    List<CustInfo> custIdList;
+    List<Long> custIdList;
 
     @NotBlank(message = "SMS 발송일시를 입력해주세요.")
     String sendDt;
@@ -23,7 +23,7 @@ public class SmsSendRequestDto {
     Long itemId;
 
     @Builder
-    public SmsSendRequestDto(List<CustInfo> custIdList, String sendDt, Long templateId, Long itemId) {
+    public SmsSendRequestDto(List<Long> custIdList, String sendDt, Long templateId, Long itemId) {
         this.custIdList = custIdList;
         this.sendDt = sendDt;
         this.templateId = templateId;

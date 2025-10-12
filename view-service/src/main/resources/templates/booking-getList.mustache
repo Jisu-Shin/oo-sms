@@ -48,9 +48,9 @@
                         <td>{{bookDt}}</td>
                         <td>{{count}}</td>
                         <td>{{bookingStatus}}</td>
-                        <td> {{#isBooking}}
+                        <td> {{#bookingFlag}}
                             <button type="button" class="btn btn-sm btn-danger cancel-booking">취소</button>
-                        {{/isBooking}} </td>
+                        {{/bookingFlag}} </td>
                     </tr>
                 {{/bookings}}
                 </tbody>

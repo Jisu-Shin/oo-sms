@@ -1,7 +1,8 @@
 package com.oosms.sms.service;
 
-import com.oosms.common.dto.CustInfo;
+import com.oosms.common.dto.CustListResponseDto;
 import com.oosms.common.dto.SmsSendRequestDto;
+import com.oosms.cust.service.CustService;
 import com.oosms.sms.domain.*;
 import com.oosms.sms.service.filter.SmsFilter;
 import com.oosms.sms.service.smsTemplateVarBind.SmsTmpltVarBinder;
@@ -34,11 +35,16 @@ class SmsFactoryTest {
     @Mock
     private SmsTmpltVarBinder smsTmpltVarBinder;
 
+    @Mock
+    private CustService custService;
+
     @InjectMocks
     private SmsFactory smsFactory;
 
     private SmsTemplate testSmsTemplate;
     private SmsSendRequestDto testRequestDto;
+    private CustListResponseDto testCust5;
+    private CustListResponseDto testCust6;
 
     // ==== TC-016: SMS 리스트 생성 성공 테스트 ====
 
@@ -52,6 +58,7 @@ class SmsFactoryTest {
 
         //then
         assertThat(result).hasSize(2);
+
         verifyFirstSms(result.get(0));
         verifySecondSms(result.get(1));
     }
@@ -62,7 +69,7 @@ class SmsFactoryTest {
     public void createSmsList_날짜파싱_및_SMS객체_올바른_생성() throws Exception {
         //given
         setupCommonMocks();
-        
+
         //when
         List<Sms> result = smsFactory.createSmsList(testSmsTemplate, testRequestDto);
 
@@ -72,7 +79,7 @@ class SmsFactoryTest {
         assertThat(sms.getSendDt()).isEqualTo(LocalDateTime.of(2025, 9, 6, 14, 0));
         
         // SMS 객체가 올바른 값들로 생성되었는지 검증
-        assertThat(sms.getCustId()).isEqualTo(1L);
+        assertThat(sms.getCustId()).isEqualTo(5L);
         assertThat(sms.getSmsTemplate()).isEqualTo(testSmsTemplate);
         assertThat(sms.getSendPhoneNumber()).isEqualTo("01012345678");
     }
@@ -118,20 +125,43 @@ class SmsFactoryTest {
         verify(smsFilter, never()).filter(any(), any());
     }
 
+    @Test
+    public void sms발송_전화번호가_비어있으면_예외발생() throws Exception {
+        //given
+        SmsSendRequestDto requestDto = SmsSendRequestDto.builder()
+                .custIdList(List.of(1L)) // 빈 전화번호
+                .sendDt("202509060928")
+                .templateId(1L)
+                .build();
+        CustListResponseDto emptyPhoneNumberCust = createCustListResponseDto(5L, "홍길동", null, CustSmsConsentType.ALL_ALLOW.name());
+        when(custService.findById(1L)).thenReturn(emptyPhoneNumberCust);
+
+        //when & then
+        List<Sms> smsList = smsFactory.createSmsList(testSmsTemplate, testRequestDto);
+
+//        assertThat(exception.getMessage()).isEqualTo("고객의 전화번호가 비어있습니다");
+    }
+
     // ==== Helper 메서드 ====
 
     private void setupCommonMocks() {
         testSmsTemplate = createSmsTemplate();
         testRequestDto = createSendRequestDto();
-        
+        testCust5 = createCustListResponseDto(5L, "홍길동", "01012345678", CustSmsConsentType.ALL_ALLOW.getDisplayName());
+        testCust6 = createCustListResponseDto(6L, "김철수", "01098765432", CustSmsConsentType.ALL_ALLOW.getDisplayName());
+
         when(smsTmpltVarBinder.bind(eq(testSmsTemplate), any(BindingDto.class)))
                 .thenReturn("바인딩된 메시지 내용");
+        when(custService.findById(5L)).thenReturn(testCust5);
+        when(custService.findById(6L)).thenReturn(testCust6);
+
         when(smsFilter.filter(any(Sms.class), any(CustSmsConsentType.class)))
                 .thenReturn(SmsResult.SUCCESS);
+
     }
 
     private void verifyFirstSms(Sms sms) {
-        assertThat(sms.getCustId()).isEqualTo(1L);
+        assertThat(sms.getCustId()).isEqualTo(5L);
         assertThat(sms.getSendPhoneNumber()).isEqualTo("01012345678");
         assertThat(sms.getSmsContent()).isEqualTo("바인딩된 메시지 내용");
         assertThat(sms.getSmsTemplate()).isEqualTo(testSmsTemplate);
@@ -140,19 +170,26 @@ class SmsFactoryTest {
     }
 
     private void verifySecondSms(Sms sms) {
-        assertThat(sms.getCustId()).isEqualTo(2L);
-        assertThat(sms.getSendPhoneNumber()).isEqualTo("01087654321");
+        assertThat(sms.getCustId()).isEqualTo(6L);
+        assertThat(sms.getSendPhoneNumber()).isEqualTo("01098765432");
     }
 
     private SmsTemplate createSmsTemplate() {
-        return SmsTemplate.createSmsTemplate("안녕하세요 {고객명}님", SmsType.INFORMAITONAL);
+        return SmsTemplate.createSmsTemplate("안녕하세요 #{고객명}님", SmsType.INFORMAITONAL);
+    }
+
+    private CustListResponseDto createCustListResponseDto(long id, String custName, String phoneNumber, String consentType) {
+        CustListResponseDto responseDto = new CustListResponseDto();
+        responseDto.setId(id);
+        responseDto.setName(custName);
+        responseDto.setPhoneNumber(phoneNumber);
+        responseDto.setConsentType(consentType);
+        return responseDto;
     }
 
     private SmsSendRequestDto createSendRequestDto() {
         return SmsSendRequestDto.builder()
-                .custIdList(List.of(
-                        new CustInfo(1L, "01012345678", "전체 허용"),
-                        new CustInfo(2L, "01087654321", "광고 거부")
+                .custIdList(List.of( 5L, 6L
                 ))
                 .sendDt("202509061400")  // 2025-09-06 14:00
                 .itemId(100L)

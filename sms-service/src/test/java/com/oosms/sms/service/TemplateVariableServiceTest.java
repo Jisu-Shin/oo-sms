@@ -46,9 +46,7 @@ class TemplateVariableServiceTest {
                 .thenAnswer(invocation -> {
                     TemplateVariable entity = invocation.getArgument(0);
                     // ID 할당
-                    Field idField = TemplateVariable.class.getDeclaredField("id");
-                    idField.setAccessible(true);
-                    idField.set(entity, 1L);
+                    ReflectionTestUtils.setField(entity, "id", 1L);
                     return entity;
                 });
 

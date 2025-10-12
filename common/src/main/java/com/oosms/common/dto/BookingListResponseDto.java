@@ -15,7 +15,7 @@ public class BookingListResponseDto {
     private int count;
     private String bookingStatus;
     private String bookDt;
-    private boolean isBooking;
+    private boolean bookingFlag;
 
     @Override
     public String toString() {
@@ -27,7 +27,7 @@ public class BookingListResponseDto {
                 ", count=" + count +
                 ", bookingStatus='" + bookingStatus + '\'' +
                 ", bookDt='" + bookDt + '\'' +
-                ", isBooking=" + isBooking +
+                ", bookingFlag=" + bookingFlag +
                 '}';
     }
 }
