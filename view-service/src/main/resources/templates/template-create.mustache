@@ -9,7 +9,7 @@
                 <h5 class="card-title fw-bold text-center text-success mb-4">SMS 템플릿 관리</h5>
 
                 <div class="table-responsive mb-4 table-scrollable">
-                    <table class="table table-striped table-hover" id="table-template">
+                    <table class="table table-hover" id="table-template">
                         <thead>
                         <tr>
                             <th>번호</th>
@@ -33,6 +33,7 @@
 
                 <form action="/smsTemplates/new" method="post">
                     <div class="mb-3">
+                        <input type="text" class="form-control-plaintext" id="template-id" hidden>
                         <label for="templateContent" class="form-label">SMS 템플릿 내용</label>
                         <textarea class="form-control" placeholder="내용을 입력하세요" id="templateContent" name ="templateContent"></textarea>
 
@@ -74,6 +75,7 @@
                         <table class="table table-hover" id="placeholdersTable">
                             <thead>
                             <tr>
+                                <th hidden>번호</th>
                                 <th>분류</th>
                                 <th>영문</th>
                                 <th>국문</th>
@@ -83,6 +85,7 @@
                             <tbody>
                             {{#placeholders}}
                                 <tr>
+                                    <td hidden>{{id}}</td>
                                     <td>{{displayVarType}}</td>
                                     <td>{{enText}}</td>
                                     <td>{{koText}}</td>
@@ -97,6 +100,7 @@
 
                 <form action="/templateVariable/new" method="post">
                     <div class="mb-3">
+                        <input type="text" class="form-control-plaintext" id="variable-id" hidden>
                         <label for="variableType" class="form-label">템플릿 변수 유형</label>
                         <select class="form-select" name="variableType" id="variableType">
                             <option value="" selected>선택해주세요</option>

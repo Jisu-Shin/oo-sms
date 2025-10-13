@@ -8,6 +8,11 @@ const smsTypeMap = {
 };
 /* 끝 */
 
+/* 전역 변수 선언 */
+var selectedTemplateRow = null;
+var selectedVariableRow = null;
+/* 끝 */
+
 var main = {
     init : function () {
 
@@ -52,11 +57,16 @@ var main = {
             }
         });
 
+        /* sms템플릿, 템플릿 변수 수정 삭제 버튼 */
         $('.btn-template-edit').on("click", function() {
             _this.editTemplate(this);
         });
 
         $('#btn-template-cancel-edit').on("click", _this.cancelTemplateEdit);
+
+        $('#btn-template-delete').on("click", _this.deleteTemplate);
+
+        $('#btn-template-confirm-edit').on("click", _this.confirmEditTemplate);
 
         $('.btn-variable-edit').on("click", function() {
             _this.editVariable(this);
@@ -64,15 +74,20 @@ var main = {
 
         $('#btn-variable-cancel-edit').on("click", _this.cancelVariableEdit);
 
+        $('#btn-variable-delete').on("click", _this.deleteVariable);
+
+        $('#btn-variable-confirm-edit').on("click", _this.confirmEditVariable);
+        /* 끝 */
+
     },
 
     add : function () {
-        var phonenumber = $('#ipt-phonenumber').val();
+        let phonenumber = $('#ipt-phonenumber').val();
         if (oper.isEmpty(phonenumber)) {
             alert("전화번호를 입력해주세요.")
 
         } else {
-            var insertTr = "";
+            let insertTr = "";
             insertTr += "<tr><td>";
             insertTr += phonenumber;
             insertTr += "</td></tr>";
@@ -105,10 +120,10 @@ var main = {
         console.log(template);
         console.log(oper.getTodayDt());
 
-        var itemId = $("#selectItem").val();
+        let itemId = $("#selectItem").val();
         console.log(itemId);
 
-        var data = {
+        let data = {
                 custIdList: custIdList,
                 templateId: template.id,
                 sendDt : oper.getTodayDt(),
@@ -120,23 +135,23 @@ var main = {
     cancelBooking : function (btn) {
         let bookingRow = $(btn).closest("tr");
         console.log(bookingRow);
-        var bookingId = bookingRow.find("td").eq(0).text().trim();
+        let bookingId = bookingRow.find("td").eq(0).text().trim();
         console.log(bookingId)
-        var data = {}
+        let data = {}
         oper.ajax("POST",data,'/api/bookings/'+bookingId+'/cancel', callback.cancelBooking);
     },
 
     insertPlaceholder : function (tr) {
-        var koText = $(tr).find("td").eq(2).text().trim();
-        var curr = $('#templateContent').val();
+        let koText = $(tr).find("td").eq(2).text().trim();
+        let curr = $('#templateContent').val();
         $('#templateContent').val(curr+"#{"+koText+"} ");
     },
 
     searchbooking : function () {
-        var itemId = $("#selectItem").val();
+        let itemId = $("#selectItem").val();
 
         if(itemId){
-             var data = {
+             let data = {
                         'itemId' : itemId ,
                         'bookingStatus' : 'BOOK'
                        };
@@ -150,11 +165,16 @@ var main = {
     editTemplate : function (btn) {
         // 1. 수정할 데이터 가져오기
         console.log("row읽기..");
-        let selectedRow = $(btn).closest("tr");
-        console.log(selectedRow);
+        if (oper.isEmpty(selectedTemplateRow) == false) {
+            selectedTemplateRow.removeClass('table-active');
+        }
+        selectedTemplateRow = $(btn).closest("tr");
+        selectedTemplateRow.addClass('table-active');
+        console.log(selectedTemplateRow);
 
-        let templateContent = selectedRow.find("td").eq(1).text().trim();
-        let smsTypeText = selectedRow.find("td").eq(2).text().trim();
+        let templateId = selectedTemplateRow.find("td").eq(0).text().trim();
+        let templateContent = selectedTemplateRow.find("td").eq(1).text().trim();
+        let smsTypeText = selectedTemplateRow.find("td").eq(2).text().trim();
 
         console.log(templateContent);
         console.log(smsTypeText);
@@ -163,6 +183,7 @@ var main = {
         const smsTypeValue = smsTypeMap[smsTypeText];
 
         // 2. 입력 필드에 값 세팅
+        $('#template-id').val(templateId);
         $('#templateContent').val(templateContent);
         $('#smsType').val(smsTypeValue);
 
@@ -173,6 +194,7 @@ var main = {
 
     cancelTemplateEdit : function () {
         console.log("취소할게요");
+        selectedTemplateRow.removeClass('table-active');
 
         // 필드 값 초기화
         $('#templateContent').val('');
@@ -186,17 +208,24 @@ var main = {
     editVariable : function (btn) {
         // 1. 수정할 데이터 가져오기
         console.log("row읽기..");
-        let selectedRow = $(btn).closest("tr");
-        console.log(selectedRow);
+        if (oper.isEmpty(selectedVariableRow) == false) {
+            selectedVariableRow.removeClass('table-active');
+        }
 
-        let type = selectedRow.find("td").eq(0).text().trim();
-        let koText = selectedRow.find("td").eq(1).text().trim();
-        let enText = selectedRow.find("td").eq(2).text().trim();
+        selectedVariableRow = $(btn).closest("tr");
+        selectedVariableRow.addClass('table-active');
+        console.log(selectedVariableRow);
+
+        let id = selectedVariableRow.find("td").eq(0).text().trim();
+        let type = selectedVariableRow.find("td").eq(1).text().trim();
+        let enText = selectedVariableRow.find("td").eq(2).text().trim();
+        let koText = selectedVariableRow.find("td").eq(3).text().trim();
 
         console.log(type);
         console.log(koText);
 
         // 2. 입력 필드에 값 세팅
+        $('#variable-id').val(id);
         $('#variableType').val(type);
         $('#koText').val(koText);
         $('#enText').val(enText);
@@ -208,6 +237,7 @@ var main = {
 
     cancelVariableEdit : function () {
         console.log("취소할게요");
+        selectedVariableRow.removeClass('table-active');
 
         // 필드 값 초기화
         $('#variableType').val("");
@@ -217,6 +247,45 @@ var main = {
         // 3. 기존 버튼 숨기기 및 신규 버튼 추가
         $('#variable-register-group').removeClass('d-none');
         $('#variable-edit-group').addClass('d-none');
+    },
+
+    deleteTemplate : function () {
+        let templateId = $('#template-id').val();
+        if (confirm("템플릿을 삭제하시겠습니까?") == true) {
+            oper.ajax("DELETE", {}, '/api/smsTemplates/'+templateId, callback.deleteTemplate);
+        }
+    },
+
+    deleteVariable : function () {
+        let variableId = $('#variable-id').val();
+        if (confirm("템플릿변수를 삭제하시겠습니까?") == true) {
+            oper.ajax("DELETE", {}, '/api/templateVariables/'+variableId, callback.deleteVariable);
+        }
+    },
+
+    confirmEditTemplate : function () {
+        console.log("수정수정");
+        if (confirm("템플릿을 수정하시겠습니까?") == true) {
+            let data = {
+                id : $('#template-id').val() ,
+                templateContent : $('#templateContent').val() ,
+                smsType : $('#smsType').val()
+            };
+            oper.ajax("POST", data, '/api/smsTemplates/edit', callback.confirmEditTemplate);
+        }
+    },
+
+    confirmEditVariable : function () {
+        console.log("수정수정");
+        if (confirm("템플릿변수를 수정하시겠습니까?") == true) {
+            let data = {
+                id : $('#variable-id').val() ,
+                koText : $('#koText').val(),
+                enText : $('#enText').val(),
+                displayVarType : $('#variableType').val()
+            };
+            oper.ajax("POST", data, '/api/templateVariables/edit', callback.confirmEditVariable);
+        }
     }
 };
 
@@ -224,10 +293,10 @@ var callback = {
 
     choiceCust : function (data) {
         console.log("고객 조회 완료");
-        var tbody = $('#tbody');
+        let tbody = $('#tbody');
         tbody.empty();
         data.forEach(cust => {
-            var row = '<tr>'
+            let row = '<tr>'
             row+='<td><input type="checkbox" name="chb_cust" value="" </td>'
             row+='<td>'+cust.id+'</td>'
             row+='<td>'+cust.name+'</td>'
@@ -247,18 +316,37 @@ var callback = {
     } ,
 
     searchbooking : function (data) {
-        var tbody = $('#custBody');
+        let tbody = $('#custBody');
         tbody.empty();
         data.forEach(cust => {
-            var row = '<tr>'
+            let row = '<tr>'
             row+='<td><input type="checkbox" class="cust-checkbox"> </td>'
             row+='<td>'+cust.custId+'</td>'
             row+='<td>'+cust.custName+'</td>'
             row+='</tr>'
             tbody.append(row);
         });
-    }
+    } ,
 
+    deleteTemplate : function () {
+        alert("템플릿이 삭제되었습니다.");
+        window.location.href='/smsTemplates/new';
+    } ,
+
+    deleteVariable : function () {
+        alert("템플릿변수가 삭제되었습니다.");
+        window.location.href='/smsTemplates/new';
+    } ,
+
+    confirmEditTemplate : function () {
+        alert("템플릿이 수정되었습니다.");
+        window.location.href='/smsTemplates/new';
+    } ,
+
+    confirmEditVariable : function () {
+        alert("템플릿변수가 수정되었습니다.");
+        window.location.href='/smsTemplates/new';
+    }
 }
 
 var oper = {
@@ -281,7 +369,7 @@ var oper = {
         $.ajax({
             'type': type,
             'url':url,
-            'dataType':'json',
+//            'dataType':'json',
             'contentType':'application/json; charset=utf-8',
             'data': type === "GET" ? null : JSON.stringify(data)
         })
@@ -290,8 +378,8 @@ var oper = {
         })
         .fail(function(xhr, status, error) {
             // 요청이 실패했을 때 실행되는 코드
-            console.error('요청 실패:', xhr.responseJSON);
-            var errMsg = xhr.responseJSON.message;
+            console.error('요청 실패:', xhr);
+            let errMsg = xhr.responseJSON?.message || xhr.responseText || error || '알 수 없는 오류';
             alert(errMsg);
         })
 //        .always(function (){
