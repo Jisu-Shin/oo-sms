@@ -1,10 +1,7 @@
 package com.oosms.sms.service;
 
 import com.oosms.common.dto.SmsTemplateRequestDto;
-import com.oosms.sms.domain.SmsTemplate;
-import com.oosms.sms.domain.SmsType;
-import com.oosms.sms.domain.TemplateVariable;
-import com.oosms.sms.domain.TemplateVariableType;
+import com.oosms.sms.domain.*;
 import com.oosms.sms.mapper.SmsTemplateMapper;
 import com.oosms.sms.repository.JpaSmsTemplateRepository;
 import com.oosms.sms.repository.JpaSmsTmpltVarRelRepository;
@@ -16,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -154,6 +150,33 @@ public class SmsTemplateServiceTest {
 
         SmsTemplate smsTemplate = createTestSmsTemplateWithId(10L, "기존 템플릿 내용");
         when(jpaSmsTemplateRepository.findById(10L)).thenReturn(Optional.of(smsTemplate));
+
+        //when
+        Long updatedSmsTemplateId = service.update(requestDto);
+
+        // then
+        assertThat(updatedSmsTemplateId).isEqualTo(10L);
+        assertThat(smsTemplate.getTemplateContent()).isEqualTo(requestDto.getTemplateContent());
+        assertThat(smsTemplate.getSmsType()).isEqualTo(SmsType.ADVERTISING);
+
+        System.out.println("smsTemplate = " + smsTemplate.getTemplateContent());
+        System.out.println("smsTemplate = " + smsTemplate.getSmsType());
+    }
+
+    @Test
+    public void 템플릿변수가있는수정_정상() throws Exception {
+        //given
+        SmsTemplateRequestDto requestDto = SmsTemplateRequestDto.builder()
+                .id(10L)
+                .templateContent("[광고문자] 로 템플릿 수정하고 싶어요 #{광고번호} ")
+                .smsType(SmsType.ADVERTISING.name())
+                .build();
+
+        SmsTemplate smsTemplate = createTestSmsTemplateWithId(10L, "#{고객명} 기존 템플릿 내용");
+        TemplateVariable tmpltVar1 = TemplateVariable.create("marketingNum","광고번호", TemplateVariableType.ITEM);
+        TemplateVariable tmpltVar2 = TemplateVariable.create("custName","고객명", TemplateVariableType.CUST);
+        when(jpaSmsTemplateRepository.findById(10L)).thenReturn(Optional.of(smsTemplate));
+        when(jpaTemplateVariableRepository.findByKoText("광고번호")).thenReturn(Optional.of(tmpltVar1));
 
         //when
         Long updatedSmsTemplateId = service.update(requestDto);
