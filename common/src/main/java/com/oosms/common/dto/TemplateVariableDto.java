@@ -17,8 +17,9 @@ public class TemplateVariableDto {
     private String koText;
 
     @NotBlank(message = "변수유형은 필수값 입니다.")
-    private String variableType;
     private String displayVarType;
+
+    private String variableType;
 
     @Builder
     public TemplateVariableDto(Long id, String enText, String koText, String variableType, String displayVarType) {

@@ -1,9 +1,11 @@
 package com.oosms.sms.service;
 
+import com.oosms.sms.domain.SmsTmpltVarRel;
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.common.dto.TemplateVariableDto;
 import com.oosms.sms.domain.TemplateVariableType;
 import com.oosms.sms.mapper.TemplateVariableMapper;
+import com.oosms.sms.repository.JpaSmsTmpltVarRelRepository;
 import com.oosms.sms.repository.JpaTemplateVariableRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class TemplateVariableService {
 
     private final TemplateVariableMapper templateVariableMapper;
     private final JpaTemplateVariableRepository jpaTemplateVariableRepository;
+    private final JpaSmsTmpltVarRelRepository jpaSmsTmpltVarRelRepository;
 
     @Transactional
     public Long create(TemplateVariableDto dto) {
@@ -41,7 +44,7 @@ public class TemplateVariableService {
         TemplateVariable templateVariable = jpaTemplateVariableRepository.findById(dto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 템플릿변수는 없습니다 : " + dto.getId() + " " + dto.getKoText()));
 
-        templateVariable.update(dto.getEnText(), dto.getKoText(), TemplateVariableType.valueOf(dto.getVariableType()));
+        templateVariable.update(dto.getEnText(), dto.getKoText(), TemplateVariableType.of(dto.getDisplayVarType()));
 
         return templateVariable.getId();
     }
@@ -62,6 +65,12 @@ public class TemplateVariableService {
     public void delete(Long id) {
         TemplateVariable templateVariable = jpaTemplateVariableRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 템플릿변수는 없습니다 : " + id));
+
+        List<SmsTmpltVarRel> usingSmsTmpltList = jpaSmsTmpltVarRelRepository.findBySmsTmpltVarRelId_TmpltVarId(id);
+        if (usingSmsTmpltList.size() > 0) {
+            throw new IllegalStateException("사용하고 있는 템플릿이 있어 템플릿 변수("+ templateVariable.getKoText() +")는 삭제 불가능합니다");
+        }
+
         jpaTemplateVariableRepository.deleteById(id);
     }
 }
