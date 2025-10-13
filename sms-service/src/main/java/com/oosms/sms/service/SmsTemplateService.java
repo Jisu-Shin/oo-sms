@@ -52,7 +52,8 @@ public class SmsTemplateService {
         smsTemplate.update(requestDto.getTemplateContent(), SmsType.valueOf(requestDto.getSmsType()));
 
         // 템플릿 관계 초기화
-        smsTemplate.clearRelList();
+        smsTmpltVarRelRepository.deleteBySmsTmpltVarRelId_SmsTmpltId(requestDto.getId());
+        smsTmpltVarRelRepository.flush(); // DB에 즉시 반영
 
         // 템플릿 관계 새로 생성
         List<String> koTextList = TemplateVariableUtils.extractVariabels(requestDto.getTemplateContent());

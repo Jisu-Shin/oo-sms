@@ -59,8 +59,4 @@ public class SmsTemplate {
         this.templateContent = templateContent;
         this.smsType = smsType;
     }
-
-    public void clearRelList() {
-        this.tmpltVarRelList.clear();
-    }
 }
