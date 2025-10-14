@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,8 +32,9 @@ public class ItemApiController {
 
     @Operation(summary = "예약 항목 생성")
     @PostMapping()
-    public Long create(@RequestBody @Valid ItemCreateRequestDto requestDto) {
-        return itemService.saveItem(itemMapper.toEntity(requestDto));
+    public ResponseEntity<Long> create(@RequestBody @Valid ItemCreateRequestDto requestDto) {
+        Long savedId = itemService.saveItem(itemMapper.toEntity(requestDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedId);
     }
 
     @Operation(summary = "예약 항목 단건 조회")

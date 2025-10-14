@@ -5,6 +5,8 @@ import com.oosms.sms.service.TemplateVariableService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +21,9 @@ public class TemplateVariableApiController {
 
     @Operation(summary="템플릿 변수 생성")
     @PostMapping
-    public Long create(@RequestBody TemplateVariableDto requestDto) {
-        return tmpltVarService.create(requestDto);
+    public ResponseEntity<Long> create(@RequestBody TemplateVariableDto requestDto) {
+        Long createdId = tmpltVarService.create(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdId);
     }
 
     @Operation(summary="템플릿 변수 전체조회")
@@ -37,7 +40,8 @@ public class TemplateVariableApiController {
 
     @Operation(summary = "템플릿 변수 삭제")
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         tmpltVarService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

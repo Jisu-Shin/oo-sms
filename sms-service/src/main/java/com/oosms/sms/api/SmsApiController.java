@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +23,9 @@ public class SmsApiController {
 
     @Operation(summary="sms 발송")
     @PostMapping("/send")
-    public boolean send(@Valid @RequestBody SmsSendRequestDto requestDto) {
-        return smsService.send(requestDto);
+    public ResponseEntity<Void> send(@Valid @RequestBody SmsSendRequestDto requestDto) {
+        smsService.send(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary="sms 발송목록 조회")

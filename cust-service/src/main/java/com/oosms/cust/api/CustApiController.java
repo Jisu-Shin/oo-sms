@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,15 +32,11 @@ public class CustApiController {
 
     @Operation(summary = "고객 등록")
     @PostMapping("")
-    public Long save(@RequestBody @Valid CustSaveRequestDto requestDto, BindingResult result) {
-//        if (result.hasErrors()) {
-//            return "cust-createForm";
-//        }
-
+    public ResponseEntity<Long> save(@RequestBody @Valid CustSaveRequestDto requestDto, BindingResult result) {
         String cleanPhoneNum = requestDto.getPhoneNumber().replaceAll("-","");
         requestDto.setPhoneNumber(cleanPhoneNum);
         Long custId = custService.save(requestDto);
-        return custId;
+        return ResponseEntity.status(HttpStatus.CREATED).body(custId);
     }
 
     @Operation(summary = "고객 단건 조회")
@@ -65,6 +63,5 @@ public class CustApiController {
     public List<CustListResponseDto> findByIdList(@RequestBody List<Long> custIdList) {
         return custService.findByIdList(custIdList);
     }
-
 
 }
