@@ -31,7 +31,7 @@
                     </table>
                 </div>
 
-                <form action="/smsTemplates/new" method="post">
+                <form action="/smsTemplates/new" method="post" id="smsTemplateForm">
                     <div class="mb-3">
                         <input type="text" class="form-control-plaintext" id="template-id" hidden>
                         <label for="templateContent" class="form-label">SMS 템플릿 내용</label>
@@ -55,7 +55,7 @@
                         {{/hasError}} {{/errors.smsType}}
                     </div>
                     <div class="d-grid" id="template-register-group">
-                        <button type="submit" class="btn btn-success" id="btn-template-save">등록</button>
+                        <button type="button" class="btn btn-success" id="btn-template-save">등록</button>
                     </div>
                     <div class="d-grid gap-2 mt-3 d-none" id="template-edit-group">
                         <button type="button" class="btn btn-outline-success" id="btn-template-cancel-edit">취소</button>
@@ -98,11 +98,11 @@
                     <p class="text-danger mt-3 mb-0 text-center">⚠️ 더블 클릭시 SMS 템플릿에 자동 추가 됩니다.</p>
                 </div>
 
-                <form action="/templateVariable/new" method="post">
+                <form action="/templateVariable/new" method="post" id="templateVariableForm">
                     <div class="mb-3">
                         <input type="text" class="form-control-plaintext" id="variable-id" hidden>
                         <label for="variableType" class="form-label">템플릿 변수 유형</label>
-                        <select class="form-select" name="variableType" id="variableType">
+                        <select class="form-select" name="displayVarType" id="displayVarType">
                             <option value="" selected>선택해주세요</option>
                             <option value="고객">고객</option>
                             <option value="공연">공연</option>
@@ -131,7 +131,7 @@
                         {{/hasError}} {{/errors.enText}}
                     </div>
                     <div class="d-grid" id="variable-register-group">
-                        <button type="submit" class="btn btn-success" id="btn-variable-save">등록</button>
+                        <button type="button" class="btn btn-success" id="btn-variable-save">등록</button>
                     </div>
                     <div class="d-grid gap-2 mt-3 d-none" id="variable-edit-group">
                         <button type="button" class="btn btn-outline-success" id="btn-variable-cancel-edit">취소</button>

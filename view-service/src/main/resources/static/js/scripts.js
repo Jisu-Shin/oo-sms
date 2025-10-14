@@ -79,6 +79,36 @@ var main = {
 
         $('#btn-createBooking').on("click", _this.createBooking);
 
+        $('#btn-template-save').on("click", _this.createSmsTemplate);
+
+        $('#btn-variable-save').on("click", _this.createTemplateVariable);
+
+    },
+
+    createTemplateVariable: function() {
+        const form = $('#templateVariableForm');
+        const formDataArray = form.serializeArray();
+        const data = {};
+        $.each(formDataArray, function() {
+          data[this.name] = this.value;
+        });
+
+        console.log(data);
+
+        oper.ajax("POST", data, "/api/templateVariables", callback.createTemplateVariable);
+    },
+
+    createSmsTemplate : function() {
+        const form = $('#smsTemplateForm');
+        const formDataArray = form.serializeArray();
+        const data = {};
+        $.each(formDataArray, function() {
+          data[this.name] = this.value;
+        });
+
+        console.log(data);
+
+        oper.ajax("POST", data, "/api/smsTemplates", callback.createSmsTemplate);
     },
 
     createBooking : function() {
@@ -171,7 +201,7 @@ var main = {
     },
 
     insertPlaceholder : function(tr) {
-        let koText = $(tr).find("td").eq(2).text().trim();
+        let koText = $(tr).find("td").eq(3).text().trim();
         let curr = $('#templateContent').val();
         $('#templateContent').val(curr+"#{"+koText+"} ");
     },
@@ -380,11 +410,21 @@ var callback = {
     createCust : function() {
         alert("고객등록이 완료되었습니다.");
         window.location.href='/custs';
-    },
+    } ,
 
     createBooking : function() {
         alert("예매가 완료되었습니다.");
         window.location.href="/bookings/new";
+    } ,
+
+    createSmsTemplate : function() {
+        alert("sms템플릿이 생성되었습니다.");
+        window.location.href="/smsTemplates/new";
+    } ,
+
+    createTemplateVariable : function() {
+        alert("템플릿변수가 생성되었습니다.")
+        window.location.href="/smsTemplates/new";
     }
 
     /* 콜백끝 */
