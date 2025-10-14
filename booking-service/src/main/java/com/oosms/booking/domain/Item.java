@@ -1,5 +1,6 @@
 package com.oosms.booking.domain;
 
+import com.oosms.common.exception.NotEnoughStockException;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,12 +11,12 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="dtype")
+@DiscriminatorColumn(name = "dtype")
 @Getter
 public class Item {
     @Id
     @GeneratedValue
-    @Column(name="item_id")
+    @Column(name = "item_id")
     private Long id;
 
     private String name;
@@ -53,9 +54,8 @@ public class Item {
      */
     public void removeStock(int quantity) {
         int restStock = this.stockQuantity - quantity;
-        if (restStock<0) {
-// todo           throw new NotEnoughStockException("need more stock");
-            throw new IllegalArgumentException("need more stock");
+        if (restStock < 0) {
+            throw new NotEnoughStockException();
         }
 
         this.stockQuantity = restStock;

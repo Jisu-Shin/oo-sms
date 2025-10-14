@@ -8,6 +8,7 @@ import com.oosms.common.dto.BookingListResponseDto;
 import com.oosms.booking.repository.BookingSearch;
 import com.oosms.booking.repository.JpaBookingRepository;
 import com.oosms.booking.repository.JpaItemRepository;
+import com.oosms.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,7 @@ public class BookingService {
     public Long book(BookingCreateRequestDto requestDto) {
         //엔티티조회
         Item item = jpaItemRepository.findById(requestDto.getItemId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 공연이 없습니다: " + requestDto.getItemId()));
+                .orElseThrow(() -> new NotFoundException("공연", requestDto.getItemId()));
 
         //예약 생성
         Booking booking = Booking.createBooking(requestDto.getCustId(), item, requestDto.getCount());
@@ -49,7 +50,7 @@ public class BookingService {
     public Long cancelBooking(Long bookingId) {
         //예약 엔티티 조회
         Booking booking = jpaBookingRepository.findById(bookingId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 예약이 없습니다: " + bookingId));
+                .orElseThrow(() -> new NotFoundException("예약", bookingId));
 
         // 예약 취소
         booking.cancel();
