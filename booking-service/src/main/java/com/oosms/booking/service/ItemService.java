@@ -6,6 +6,8 @@ import com.oosms.booking.repository.ItemSearch;
 import com.oosms.common.dto.ItemGetResponseDto;
 import com.oosms.common.dto.ItemUpdateRequestDto;
 import com.oosms.booking.repository.JpaItemRepository;
+import com.oosms.common.exception.DuplicateItemException;
+import com.oosms.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +36,7 @@ public class ItemService {
         ItemSearch itemSearch = new ItemSearch(item.getName(), item.getPrice());
         List<Item> result = jpaItemRepository.findBySearch(itemSearch);
         if (result.size() > 0) {
-            throw new IllegalStateException("중복된 공연을 저장할 수 없습니다");
+            throw new DuplicateItemException(item.getName());
         }
     }
 
@@ -46,14 +48,14 @@ public class ItemService {
 
     public ItemGetResponseDto findById(Long id) {
         Item item = jpaItemRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 공연이 없습니다."));
+                .orElseThrow(() -> new NotFoundException("공연", id));
         return itemMapper.toDto(item);
     }
 
     @Transactional
     public Long updateItem(ItemUpdateRequestDto requestDto) {
         Item findItem = jpaItemRepository.findById(requestDto.getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 공연이 없습니다."));
+                .orElseThrow(() -> new NotFoundException("공연", requestDto.getId()));
         findItem.update(requestDto.getName(), requestDto.getPrice(), requestDto.getStockQuantity());
         return findItem.getId();
     }

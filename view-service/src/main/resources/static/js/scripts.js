@@ -14,11 +14,7 @@ var selectedVariableRow = null;
 /* 끝 */
 
 var main = {
-    init : function () {
-
-        /* 초기화 섹션 */
-        $('#div-choiceCust').hide();
-        /* 끝 */
+    init : function() {
 
         var _this = this;
 
@@ -28,11 +24,11 @@ var main = {
             $(this).val($(this).val().replace(/[^0-9]/g, "").replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3").replace(/\-{1,2}$/g, ""));
         });
 
-        $('.cancel-booking').on('click', function () {
+        $('.cancel-booking').on('click', function() {
             _this.cancelBooking(this);
         });
 
-        $('#placeholdersTable tbody').on('dblclick','tr', function () {
+        $('#placeholdersTable tbody').on('dblclick','tr', function() {
             _this.insertPlaceholder(this);
         });
 
@@ -79,9 +75,87 @@ var main = {
         $('#btn-variable-confirm-edit').on("click", _this.confirmEditVariable);
         /* 끝 */
 
+        $('#btn-createCust').on("click", _this.createCust);
+
+        $('#btn-createBooking').on("click", _this.createBooking);
+
+        $('#btn-template-save').on("click", _this.createSmsTemplate);
+
+        $('#btn-variable-save').on("click", _this.createTemplateVariable);
+
+        $('#btn-createItem').on("click", _this.createItem);
+
     },
 
-    add : function () {
+    createItem: function() {
+        const form = $('#itemForm');
+        const formDataArray = form.serializeArray();
+        const data = {};
+        $.each(formDataArray, function() {
+          data[this.name] = this.value;
+        });
+
+        console.log(data);
+
+        oper.ajax("POST", data, "/api/items", callback.createItem);
+    } ,
+
+    createTemplateVariable: function() {
+        const form = $('#templateVariableForm');
+        const formDataArray = form.serializeArray();
+        const data = {};
+        $.each(formDataArray, function() {
+          data[this.name] = this.value;
+        });
+
+        console.log(data);
+
+        oper.ajax("POST", data, "/api/templateVariables", callback.createTemplateVariable);
+    },
+
+    createSmsTemplate : function() {
+        const form = $('#smsTemplateForm');
+        const formDataArray = form.serializeArray();
+        const data = {};
+        $.each(formDataArray, function() {
+          data[this.name] = this.value;
+        });
+
+        console.log(data);
+
+        oper.ajax("POST", data, "/api/smsTemplates", callback.createSmsTemplate);
+    },
+
+    createBooking : function() {
+        const form = $('#bookingForm');
+        const formDataArray = form.serializeArray();
+        const data = {};
+        $.each(formDataArray, function() {
+          data[this.name] = this.value;
+        });
+
+        console.log(data);
+
+        oper.ajax("POST", data, "/api/bookings", callback.createBooking);
+    },
+
+    createCust : function() {
+        const form = $('#custForm');
+        // 1. 폼 데이터를 URL 인코딩 문자열로 직렬화 (jQuery 표준)
+        const formDataArray = form.serializeArray();
+
+        // 2. 직렬화된 배열을 일반 JavaScript 객체로 변환
+        const data = {};
+        $.each(formDataArray, function() {
+          data[this.name] = this.value;
+        });
+
+        console.log(data);
+
+        oper.ajax("POST", data, "/api/custs", callback.createCust);
+    },
+
+    add : function() {
         let phonenumber = $('#ipt-phonenumber').val();
         if (oper.isEmpty(phonenumber)) {
             alert("전화번호를 입력해주세요.")
@@ -97,7 +171,7 @@ var main = {
 
     },
 
-    sendSms : function () {
+    sendSms : function() {
         let custIdList = [];
         $(".cust-checkbox:checked").each(function() {
             let custId = $(this).closest("tr").find("td").eq(1).text().trim();
@@ -132,7 +206,7 @@ var main = {
         oper.ajax("POST",data, '/api/sms/send', callback.sendSms);
     },
 
-    cancelBooking : function (btn) {
+    cancelBooking : function(btn) {
         let bookingRow = $(btn).closest("tr");
         console.log(bookingRow);
         let bookingId = bookingRow.find("td").eq(0).text().trim();
@@ -141,13 +215,13 @@ var main = {
         oper.ajax("POST",data,'/api/bookings/'+bookingId+'/cancel', callback.cancelBooking);
     },
 
-    insertPlaceholder : function (tr) {
-        let koText = $(tr).find("td").eq(2).text().trim();
+    insertPlaceholder : function(tr) {
+        let koText = $(tr).find("td").eq(3).text().trim();
         let curr = $('#templateContent').val();
         $('#templateContent').val(curr+"#{"+koText+"} ");
     },
 
-    searchbooking : function () {
+    searchbooking : function() {
         let itemId = $("#selectItem").val();
 
         if(itemId){
@@ -162,7 +236,7 @@ var main = {
         }
     },
 
-    editTemplate : function (btn) {
+    editTemplate : function(btn) {
         // 1. 수정할 데이터 가져오기
         console.log("row읽기..");
         if (oper.isEmpty(selectedTemplateRow) == false) {
@@ -192,7 +266,7 @@ var main = {
         $('#template-edit-group').removeClass('d-none');
     },
 
-    cancelTemplateEdit : function () {
+    cancelTemplateEdit : function() {
         console.log("취소할게요");
         selectedTemplateRow.removeClass('table-active');
 
@@ -205,7 +279,7 @@ var main = {
         $('#template-edit-group').addClass('d-none');
     },
 
-    editVariable : function (btn) {
+    editVariable : function(btn) {
         // 1. 수정할 데이터 가져오기
         console.log("row읽기..");
         if (oper.isEmpty(selectedVariableRow) == false) {
@@ -235,7 +309,7 @@ var main = {
         $('#variable-edit-group').removeClass('d-none');
     },
 
-    cancelVariableEdit : function () {
+    cancelVariableEdit : function() {
         console.log("취소할게요");
         selectedVariableRow.removeClass('table-active');
 
@@ -249,21 +323,21 @@ var main = {
         $('#variable-edit-group').addClass('d-none');
     },
 
-    deleteTemplate : function () {
+    deleteTemplate : function() {
         let templateId = $('#template-id').val();
         if (confirm("템플릿을 삭제하시겠습니까?") == true) {
             oper.ajax("DELETE", {}, '/api/smsTemplates/'+templateId, callback.deleteTemplate);
         }
     },
 
-    deleteVariable : function () {
+    deleteVariable : function() {
         let variableId = $('#variable-id').val();
         if (confirm("템플릿변수를 삭제하시겠습니까?") == true) {
             oper.ajax("DELETE", {}, '/api/templateVariables/'+variableId, callback.deleteVariable);
         }
     },
 
-    confirmEditTemplate : function () {
+    confirmEditTemplate : function() {
         console.log("수정수정");
         if (confirm("템플릿을 수정하시겠습니까?") == true) {
             let data = {
@@ -275,7 +349,7 @@ var main = {
         }
     },
 
-    confirmEditVariable : function () {
+    confirmEditVariable : function() {
         console.log("수정수정");
         if (confirm("템플릿변수를 수정하시겠습니까?") == true) {
             let data = {
@@ -291,7 +365,7 @@ var main = {
 
 var callback = {
 
-    choiceCust : function (data) {
+    choiceCust : function(data) {
         console.log("고객 조회 완료");
         let tbody = $('#tbody');
         tbody.empty();
@@ -305,17 +379,17 @@ var callback = {
         });
     } ,
 
-    sendSms : function () {
+    sendSms : function() {
         alert("sms 발송이 완료되었습니다");
         window.location.href='/sms/send';
     } ,
 
-    cancelBooking : function () {
+    cancelBooking : function() {
         alert("예매가 취소 되었습니다");
         window.location.href='/bookings';
     } ,
 
-    searchbooking : function (data) {
+    searchbooking : function(data) {
         let tbody = $('#custBody');
         tbody.empty();
         data.forEach(cust => {
@@ -328,29 +402,56 @@ var callback = {
         });
     } ,
 
-    deleteTemplate : function () {
+    deleteTemplate : function() {
         alert("템플릿이 삭제되었습니다.");
         window.location.href='/smsTemplates/new';
     } ,
 
-    deleteVariable : function () {
+    deleteVariable : function() {
         alert("템플릿변수가 삭제되었습니다.");
         window.location.href='/smsTemplates/new';
     } ,
 
-    confirmEditTemplate : function () {
+    confirmEditTemplate : function() {
         alert("템플릿이 수정되었습니다.");
         window.location.href='/smsTemplates/new';
     } ,
 
-    confirmEditVariable : function () {
+    confirmEditVariable : function() {
         alert("템플릿변수가 수정되었습니다.");
         window.location.href='/smsTemplates/new';
+    },
+    
+    createCust : function() {
+        alert("고객등록이 완료되었습니다.");
+        window.location.href='/custs';
+    } ,
+
+    createBooking : function() {
+        alert("예매가 완료되었습니다.");
+        window.location.href="/bookings/new";
+    } ,
+
+    createSmsTemplate : function() {
+        alert("sms템플릿이 생성되었습니다.");
+        window.location.href="/smsTemplates/new";
+    } ,
+
+    createTemplateVariable : function() {
+        alert("템플릿변수가 생성되었습니다.");
+        window.location.href="/smsTemplates/new";
+    } ,
+
+    createItem : function() {
+        alert("공연이 생성되었습니다.");
+        window.location.href="/items";
     }
+
+    /* 콜백끝 */
 }
 
 var oper = {
-    isEmpty : function (value) {
+    isEmpty : function(value) {
         if(value == "" || value == null || value == undefined) {
             return true;
         } else {
@@ -358,7 +459,7 @@ var oper = {
         }
     },
 
-    ajax : function (type, data, url, callback) {
+    ajax : function(type, data, url, callback) {
         // GET이면 쿼리스트링으로 붙이고 data는 제거
         if (type === "GET" && data && Object.keys(data).length > 0) {
             const queryString = $.param(data); // itemId=123&bookingStatus=BOOK
@@ -373,16 +474,27 @@ var oper = {
             'contentType':'application/json; charset=utf-8',
             'data': type === "GET" ? null : JSON.stringify(data)
         })
-        .done(function (response){
+        .done(function(response){
             callback(response);
         })
         .fail(function(xhr, status, error) {
             // 요청이 실패했을 때 실행되는 코드
             console.error('요청 실패:', xhr);
             let errMsg = xhr.responseJSON?.message || xhr.responseText || error || '알 수 없는 오류';
+
+            // Validation 에러인 경우 필드별 에러도 표시
+            if (xhr.responseJSON?.errors) {
+                let fieldErrors = xhr.responseJSON.errors;
+                let errorDetails = '\n';
+                for (let field in fieldErrors) {
+                    errorDetails += `- ${fieldErrors[field]}\n`;
+                }
+                errMsg += errorDetails;
+            }
+
             alert(errMsg);
         })
-//        .always(function (){
+//        .always(function(){
 //            console.log("ajax always 로그");
 //        });
     },

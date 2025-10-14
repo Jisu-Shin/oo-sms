@@ -12,11 +12,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CustSaveRequestDto {
 
-    @NotEmpty @NotBlank(message = "이름은 필수값입니다")
+    @NotBlank(message = "이름은 필수값입니다")
     private String name;
-    @NotEmpty @NotBlank(message = "전화번호는 필수값입니다")
+
+    @NotBlank(message = "전화번호는 필수값입니다")
     private String phoneNumber;
-    @NotEmpty @NotBlank(message = "고객SMS발송유형은 필수값입니다")
+
+    @NotBlank(message = "고객SMS발송유형은 필수값입니다")
     private String smsConsentType;
 
     @Builder

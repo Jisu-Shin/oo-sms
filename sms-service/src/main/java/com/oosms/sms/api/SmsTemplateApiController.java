@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,9 +25,10 @@ public class SmsTemplateApiController {
 
     @Operation(summary="sms 템플릿 생성")
     @PostMapping
-    public Long create(@RequestBody @Valid SmsTemplateRequestDto requestDto) {
+    public ResponseEntity<Long> create(@RequestBody @Valid SmsTemplateRequestDto requestDto) {
         log.info("requestDto:{}", requestDto);
-        return smsTemplateService.create(requestDto);
+        Long createdId = smsTemplateService.create(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdId);
     }
 
     @Operation(summary="sms 템플릿 전체 조회")
@@ -43,7 +46,8 @@ public class SmsTemplateApiController {
 
     @Operation(summary = "sms 템플릿 삭제")
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         smsTemplateService.deleteSmsTemplate(id);
+        return ResponseEntity.noContent().build();
     }
 }

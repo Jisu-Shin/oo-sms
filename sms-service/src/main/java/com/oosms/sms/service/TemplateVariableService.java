@@ -1,5 +1,8 @@
 package com.oosms.sms.service;
 
+import com.oosms.common.exception.MissingTemplateVariableException;
+import com.oosms.common.exception.TemplateVariableInUseException;
+import com.oosms.common.exception.TemplateVariableNotFoundException;
 import com.oosms.sms.domain.SmsTmpltVarRel;
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.common.dto.TemplateVariableDto;
@@ -25,7 +28,7 @@ public class TemplateVariableService {
 
     @Transactional
     public Long create(TemplateVariableDto dto) {
-        TemplateVariable templateVariable = TemplateVariable.create(dto.getEnText(), dto.getKoText(), TemplateVariableType.of(dto.getVariableType()));
+        TemplateVariable templateVariable = TemplateVariable.create(dto.getEnText(), dto.getKoText(), TemplateVariableType.of(dto.getDisplayVarType()));
         jpaTemplateVariableRepository.save(templateVariable);
 
         return templateVariable.getId();
@@ -42,7 +45,7 @@ public class TemplateVariableService {
         validateText(dto);
 
         TemplateVariable templateVariable = jpaTemplateVariableRepository.findById(dto.getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 템플릿변수는 없습니다 : " + dto.getId() + " " + dto.getKoText()));
+                .orElseThrow(() -> new TemplateVariableNotFoundException(dto.getKoText()));
 
         templateVariable.update(dto.getEnText(), dto.getKoText(), TemplateVariableType.of(dto.getDisplayVarType()));
 
@@ -52,23 +55,23 @@ public class TemplateVariableService {
     private void validateText(TemplateVariableDto dto) {
         if(dto.getKoText() == null ||
             dto.getKoText().isEmpty()) {
-            throw new IllegalArgumentException("템플릿변수 국문명이 없습니다");
+            throw new MissingTemplateVariableException("한글명");
         }
 
         if(dto.getEnText() == null ||
                 dto.getEnText().isEmpty()) {
-            throw new IllegalArgumentException("템플릿변수 영문명이 없습니다");
+            throw new MissingTemplateVariableException("영문명");
         }
     }
 
     @Transactional
     public void delete(Long id) {
         TemplateVariable templateVariable = jpaTemplateVariableRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 템플릿변수는 없습니다 : " + id));
+                .orElseThrow(() -> new TemplateVariableNotFoundException(id));
 
         List<SmsTmpltVarRel> usingSmsTmpltList = jpaSmsTmpltVarRelRepository.findBySmsTmpltVarRelId_TmpltVarId(id);
         if (usingSmsTmpltList.size() > 0) {
-            throw new IllegalStateException("사용하고 있는 템플릿이 있어 템플릿 변수("+ templateVariable.getKoText() +")는 삭제 불가능합니다");
+            throw new TemplateVariableInUseException(templateVariable.getKoText());
         }
 
         jpaTemplateVariableRepository.deleteById(id);

@@ -3,6 +3,9 @@ package com.oosms.sms.service;
 import com.oosms.common.dto.CustInfo;
 import com.oosms.common.dto.SmsFindListResponseDto;
 import com.oosms.common.dto.SmsSendRequestDto;
+import com.oosms.common.exception.EmptySmsTargetException;
+import com.oosms.common.exception.NotFoundException;
+import com.oosms.common.exception.SmsTemplateNotFoundException;
 import com.oosms.sms.domain.Sms;
 import com.oosms.sms.domain.SmsTemplate;
 import com.oosms.sms.mapper.SmsMapper;
@@ -47,7 +50,7 @@ public class SmsService {
 
     private void validateRequest(SmsSendRequestDto requestDto) {
         if(requestDto.getCustIdList().isEmpty()) {
-            throw new IllegalArgumentException("sms 발송할 고객이 없습니다.");
+            throw new EmptySmsTargetException();
         }
     }
 
@@ -69,6 +72,6 @@ public class SmsService {
 
     private SmsTemplate getSmsTemplate(Long templateId) {
         return jpaSmsTemplateRepository.findById(templateId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 SMS 템플릿이 없습니다: " + templateId));
+                .orElseThrow(() -> new SmsTemplateNotFoundException(templateId));
     }
 }

@@ -6,7 +6,7 @@
     <div class="card p-4 shadow-sm border-0">
         <h2 class="card-title text-center mb-4 fw-bold text-info">공연 예매</h2>
 
-        <form action="/bookings/new" method="post">
+        <form action="/bookings/new" method="post" id="bookingForm">
             <div class="mb-3">
                 <label for="cust" class="form-label">예매 회원</label>
                 <select name="custId" id="cust" class="form-select">
@@ -45,7 +45,7 @@
             </div>
 
             <div class="d-grid">
-                <button type="submit" class="btn btn-info btn-lg fw-bold">등록</button>
+                <button type="button" id="btn-createBooking" class="btn btn-info btn-lg fw-bold">등록</button>
             </div>
         </form>
     </div>

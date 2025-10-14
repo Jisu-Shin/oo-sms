@@ -1,5 +1,8 @@
 package com.oosms.sms.service;
 
+import com.oosms.common.exception.NotFoundException;
+import com.oosms.common.exception.SmsTemplateNotFoundException;
+import com.oosms.common.exception.TemplateVariableNotFoundException;
 import com.oosms.sms.domain.SmsTemplate;
 import com.oosms.sms.domain.SmsType;
 import com.oosms.sms.domain.TemplateVariable;
@@ -46,7 +49,7 @@ public class SmsTemplateService {
     @Transactional
     public Long update(SmsTemplateRequestDto requestDto) {
         SmsTemplate smsTemplate = smsTmpltRepository.findById(requestDto.getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 템플릿은 없습니다 : " + requestDto.getId()));
+                .orElseThrow(() -> new SmsTemplateNotFoundException(requestDto.getId()));
 
         // 템플릿 속성 변경
         smsTemplate.update(requestDto.getTemplateContent(), SmsType.valueOf(requestDto.getSmsType()));
@@ -65,7 +68,7 @@ public class SmsTemplateService {
     @Transactional
     public void deleteSmsTemplate(Long id) {
         SmsTemplate smsTemplate = smsTmpltRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 템플릿은 없습니다 : " + id));
+                .orElseThrow(() -> new SmsTemplateNotFoundException(id));
 
         smsTmpltVarRelRepository.deleteBySmsTmpltVarRelId_SmsTmpltId(id);
         smsTmpltRepository.deleteById(id);
@@ -81,7 +84,7 @@ public class SmsTemplateService {
         for (String koText : koTextList) {
             // 템플릿 변수 검증
             TemplateVariable tmpltVar = tmpltVarRepository.findByKoText(koText)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 템플릿 변수는 없습니다 : " + koText));
+                    .orElseThrow(() -> new TemplateVariableNotFoundException(koText));
             smsTemplate.addRelation(tmpltVar);
         }
     }
