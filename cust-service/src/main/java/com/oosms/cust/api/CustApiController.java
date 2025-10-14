@@ -32,7 +32,7 @@ public class CustApiController {
 
     @Operation(summary = "고객 등록")
     @PostMapping("")
-    public ResponseEntity<Long> save(@RequestBody @Valid CustSaveRequestDto requestDto, BindingResult result) {
+    public ResponseEntity<Long> save(@RequestBody @Valid CustSaveRequestDto requestDto) {
         String cleanPhoneNum = requestDto.getPhoneNumber().replaceAll("-","");
         requestDto.setPhoneNumber(cleanPhoneNum);
         Long custId = custService.save(requestDto);
