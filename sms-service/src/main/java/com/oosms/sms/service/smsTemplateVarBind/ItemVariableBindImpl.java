@@ -1,5 +1,6 @@
 package com.oosms.sms.service.smsTemplateVarBind;
 
+import com.oosms.common.exception.ReplacementValueNotFoundException;
 import com.oosms.sms.client.ItemApiServiceForVar;
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.common.dto.ItemGetResponseDto;
@@ -30,7 +31,7 @@ public class ItemVariableBindImpl implements VariableBinder{
                 replacements.put("공연가격", String.valueOf(item.getPrice()));
             }
             else {
-                throw new IllegalStateException("템플릿 변수 치환값이 없습니다: " + tmpltVar.getKoText());
+                throw new ReplacementValueNotFoundException(tmpltVar.getKoText());
             }
         }
 
