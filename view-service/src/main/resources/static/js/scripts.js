@@ -83,7 +83,22 @@ var main = {
 
         $('#btn-variable-save').on("click", _this.createTemplateVariable);
 
+        $('#btn-createItem').on("click", _this.createItem);
+
     },
+
+    createItem: function() {
+        const form = $('#itemForm');
+        const formDataArray = form.serializeArray();
+        const data = {};
+        $.each(formDataArray, function() {
+          data[this.name] = this.value;
+        });
+
+        console.log(data);
+
+        oper.ajax("POST", data, "/api/items", callback.createItem);
+    } ,
 
     createTemplateVariable: function() {
         const form = $('#templateVariableForm');
@@ -423,8 +438,13 @@ var callback = {
     } ,
 
     createTemplateVariable : function() {
-        alert("템플릿변수가 생성되었습니다.")
+        alert("템플릿변수가 생성되었습니다.");
         window.location.href="/smsTemplates/new";
+    } ,
+
+    createItem : function() {
+        alert("공연이 생성되었습니다.");
+        window.location.href="/items";
     }
 
     /* 콜백끝 */
@@ -461,6 +481,17 @@ var oper = {
             // 요청이 실패했을 때 실행되는 코드
             console.error('요청 실패:', xhr);
             let errMsg = xhr.responseJSON?.message || xhr.responseText || error || '알 수 없는 오류';
+
+            // Validation 에러인 경우 필드별 에러도 표시
+            if (xhr.responseJSON?.errors) {
+                let fieldErrors = xhr.responseJSON.errors;
+                let errorDetails = '\n';
+                for (let field in fieldErrors) {
+                    errorDetails += `- ${fieldErrors[field]}\n`;
+                }
+                errMsg += errorDetails;
+            }
+
             alert(errMsg);
         })
 //        .always(function(){
