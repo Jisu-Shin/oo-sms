@@ -47,7 +47,7 @@ public class CustApiController {
 
     @Operation(summary = "고객 단건 수정")
     @PutMapping("/{id}")
-    public Long update(@PathVariable("id") Long id, @RequestBody CustUpdateRequestDto requestDto) {
+    public Long update(@PathVariable("id") Long id, @RequestBody @Valid CustUpdateRequestDto requestDto) {
         return custService.update(id, requestDto);
     }
 
