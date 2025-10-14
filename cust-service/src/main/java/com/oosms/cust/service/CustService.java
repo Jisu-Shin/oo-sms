@@ -1,6 +1,8 @@
 package com.oosms.cust.service;
 
 import com.oosms.common.dto.*;
+import com.oosms.common.exception.CustNotFoundException;
+import com.oosms.common.exception.DuplicateCustException;
 import com.oosms.cust.domain.Cust;
 import com.oosms.cust.domain.CustSmsConsentType;
 import com.oosms.cust.mapper.CustMapper;
@@ -32,24 +34,23 @@ public class CustService {
     }
 
     private void validateDuplicateCust(CustSaveRequestDto requestDto) {
-        // EXCEPTION
         Optional<Cust> findCust = custRepository.findByName(requestDto.getName());
         if (!findCust.isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 고객입니다.");
+            throw new DuplicateCustException(requestDto.getName());
         }
     }
 
     @Transactional
     public Long update(Long id, CustUpdateRequestDto requestDto) {
         Cust cust = custRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 고객이 없습니다. id = " + id));
+                .orElseThrow(() -> new CustNotFoundException(id));
         cust.update(requestDto.getPhoneNumber(), CustSmsConsentType.of(requestDto.getSmsConsentType()));
         return id;
     }
 
     public CustListResponseDto findById(Long id) {
         Cust entity = custRepository.findById(id)
-                .orElseThrow(()->new IllegalArgumentException("해당 고객이 없습니다. id = " + id));
+                .orElseThrow(() -> new CustNotFoundException(id));
 
         return custMapper.toDto(entity);
     }
@@ -65,7 +66,7 @@ public class CustService {
 
     public List<CustListResponseDto> findByName(String name) {
         System.out.println("name = " + name);
-        return custRepository.findByNameLike("%"+name+"%").stream()
+        return custRepository.findByNameLike("%" + name + "%").stream()
                 .map(custMapper::toDto)
                 .collect(Collectors.toList());
     }
