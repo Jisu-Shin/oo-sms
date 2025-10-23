@@ -39,7 +39,7 @@ public class BookingApiController {
 
     @Operation(summary = "예약 조건 검색")
     @GetMapping("/search")
-    public List<BookingListResponseDto> searchBooking(@ModelAttribute BookingSearch bookingSearch) {
+    public List<BookingListResponseDto> searchBooking(BookingSearch bookingSearch) {
         log.info("검색어: {}", bookingSearch);
         return bookingService.findBooking(bookingSearch);
     }
