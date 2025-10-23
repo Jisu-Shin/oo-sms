@@ -74,7 +74,7 @@ class SmsApiControllerTest {
     public void sms목록조회() throws Exception {
         //given
         List<SmsFindListResponseDto> mockList = List.of(Mockito.mock(SmsFindListResponseDto.class));
-        when(smsService.findSmsList(any(),any())).thenReturn(mockList);
+        when(smsService.findSmsList(any())).thenReturn(mockList);
 
         //when
         mockMvc.perform(get("/api/sms/sendList")
