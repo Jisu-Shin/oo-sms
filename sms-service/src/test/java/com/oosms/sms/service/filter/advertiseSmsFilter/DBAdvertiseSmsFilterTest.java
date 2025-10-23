@@ -4,6 +4,7 @@ import com.oosms.sms.domain.SmsTemplate;
 import com.oosms.sms.domain.SmsType;
 import com.oosms.sms.domain.Sms;
 import com.oosms.sms.repository.JpaSmsRepository;
+import com.oosms.sms.repository.dto.SmsWithCust;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,18 +29,20 @@ class DBAdvertiseSmsFilterTest {
     @InjectMocks
     DBAdvertiseSmsFilter filter;
 
+    private SmsWithCust testSmsWithCust;
     private Sms testSms;
 
     @BeforeEach
     void setUp() {
         // 테스트용 SMS 객체 생성
         testSms = createAdvertisingSms();
+        testSmsWithCust = createSmsWithCust(testSms);
     }
 
     @Test
     public void 광고메시지_정상발송_광고이력0개() throws Exception {
         //given
-        when(jpaSmsRepository.findBySendDt(any())).thenReturn(Collections.emptyList());
+        when(jpaSmsRepository.findBySearch(any())).thenReturn(Collections.emptyList());
 
         //when
         boolean sendable = filter.isSendable(testSms);
@@ -51,7 +54,7 @@ class DBAdvertiseSmsFilterTest {
     @Test
     public void 광고메시지_정상발송_광고이력1개() throws Exception {
         //given
-        when(jpaSmsRepository.findBySendDt(any())).thenReturn(List.of(createAdvertisingSms()));
+        when(jpaSmsRepository.findBySearch(any())).thenReturn(List.of(testSmsWithCust));
 
         //when
         boolean sendable = filter.isSendable(testSms);
@@ -63,9 +66,7 @@ class DBAdvertiseSmsFilterTest {
     @Test
     public void 광고메시지_발송불가() throws Exception {
         //given
-        Sms adSms1 = createAdvertisingSms();
-        Sms adSms2 = createAdvertisingSms();
-        when(jpaSmsRepository.findBySendDt(any())).thenReturn(List.of(adSms1, adSms2));
+        when(jpaSmsRepository.findBySearch(any())).thenReturn(List.of(testSmsWithCust, testSmsWithCust));
 
         //when
         boolean sendable = filter.isSendable(testSms);
@@ -85,6 +86,11 @@ class DBAdvertiseSmsFilterTest {
                 .build();
 
         return sms;
+    }
+
+    private SmsWithCust createSmsWithCust(Sms sms) {
+        SmsWithCust smsWithCust = new SmsWithCust(sms, "홍길동");
+        return smsWithCust;
     }
 
 
