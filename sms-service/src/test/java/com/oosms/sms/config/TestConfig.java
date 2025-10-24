@@ -1,5 +1,6 @@
 package com.oosms.sms.config;
 
+import com.oosms.cust.repository.JpaCustRepository;
 import com.oosms.sms.client.CustApiServiceForVar;
 import com.oosms.sms.client.ItemApiServiceForVar;
 import org.mockito.Mockito;
@@ -15,12 +16,17 @@ public class TestConfig {
 //    }
 
     @Bean
-    public CustApiServiceForVar custApiService() {
+    public CustApiServiceForVar custApiServiceForVar() {
         return Mockito.mock(CustApiServiceForVar.class);
     }
 
     @Bean
-    public ItemApiServiceForVar itemApiService() {
+    public ItemApiServiceForVar itemApiServiceForVar() {
         return Mockito.mock(ItemApiServiceForVar.class);
+    }
+
+    @Bean
+    public JpaCustRepository jpaCustRepository() {
+        return Mockito.mock(JpaCustRepository.class);
     }
 }

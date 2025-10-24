@@ -1,5 +1,6 @@
 package com.oosms.sms.service.smsTemplateVarBind;
 
+import com.oosms.common.exception.ReplacementValueNotFoundException;
 import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
 import com.oosms.common.dto.ItemGetResponseDto;
 import com.oosms.sms.client.ItemApiServiceForVar;
@@ -54,7 +55,6 @@ class ItemVariableBindImplTest {
         assertEquals(itemName, resultMap.get("공연명"));
         assertEquals(itemPrice, resultMap.get("공연가격"));
 
-        // todo 확인 필요 왜 .. 콤마가 있지?
         System.out.println("resultMap.get(\"공연가격\") = " + resultMap.get("공연가격"));
     }
 
@@ -68,7 +68,7 @@ class ItemVariableBindImplTest {
         templateVariableList.add(TemplateVariable.create("itemPlace","공연장소", TemplateVariableType.ITEM));
 
         //when
-        assertThrows(IllegalStateException.class, ()->itemVariableBind.getValues(templateVariableList, bindingDto));
+        assertThrows(ReplacementValueNotFoundException.class, ()->itemVariableBind.getValues(templateVariableList, bindingDto));
 
         //then
     }
