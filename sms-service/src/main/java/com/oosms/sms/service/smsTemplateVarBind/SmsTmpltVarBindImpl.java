@@ -24,30 +24,71 @@ public class SmsTmpltVarBindImpl implements SmsTmpltVarBinder {
 
     @Override
     public String bind(SmsTemplate smsTemplate, BindingDto bindingDto) {
-        List<SmsTmpltVarRel> tmpltVarRelList = smsTemplate.getTmpltVarRelList();
-        if (tmpltVarRelList.isEmpty()) {
+        List<SmsTmpltVarRel> templateVariableRelations = smsTemplate.getTmpltVarRelList();
+        
+        if (templateVariableRelations.isEmpty()) {
             return smsTemplate.getTemplateContent();
         }
 
-        // 변수 유형별로 그룹핑
-        Map<TemplateVariableType, List<TemplateVariable>> grouping = tmpltVarRelList.stream()
-                .collect(Collectors.groupingBy(
-                        rel -> rel.getTemplateVariable().getVariableType(),
-                        Collectors.mapping(SmsTmpltVarRel::getTemplateVariable, Collectors.toList())
-                ));
-        log.info("@@@@@ 템플릿 변수 유형별로 그룹핑 완료");
-
-        // 치환 맵 생성
-        Map<String, String> replacements = grouping.entrySet().stream()
-                .flatMap(entry -> {
-                    VariableBinder binder = variableBinderMap.get(entry.getKey().getClassName());
-                    if (binder == null) {
-                        throw new VariableBinderNotFoundException(entry.getKey().getClassName());
-                    }
-                    return binder.getValues(entry.getValue(), bindingDto).entrySet().stream();
-                })
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Map<TemplateVariableType, List<TemplateVariable>> variableBinderMap =
+                groupVariablesByType(templateVariableRelations);
+        
+        Map<String, String> replacements = createReplacementMap(variableBinderMap, bindingDto);
 
         return TemplateVariableUtils.replaceVariables(smsTemplate.getTemplateContent(), replacements);
+    }
+
+    /**
+     * sms템플릿에 있는 템플릿변수들을 타입(고객/아이템..등등) 에 따라 분류
+     * @param templateVariableRelations
+     * @return sms템플릿에 있는 템플릿 변수들을 TemplateVariableType 별로 분류해놓은 map
+     */
+    private Map<TemplateVariableType, List<TemplateVariable>> groupVariablesByType(
+            List<SmsTmpltVarRel> templateVariableRelations) {
+        
+        Map<TemplateVariableType, List<TemplateVariable>> variableBinderMap = templateVariableRelations.stream()
+                .collect(Collectors.groupingBy(
+                        relation -> relation.getTemplateVariable().getVariableType(),
+                        Collectors.mapping(SmsTmpltVarRel::getTemplateVariable, Collectors.toList())
+                ));
+        
+        log.info("Grouped template variables by type: {} types found", variableBinderMap.size());
+        return variableBinderMap;
+    }
+
+    /**
+     * variableBinderMap 에 있는 key별로 치환값 가져오기
+     * @param variableBinderMap sms템플릿에 있는 템플릿 변수들을 TemplateVariableType 별로 분류해놓은 map
+     * @param bindingDto
+     * @return
+     */
+    private Map<String, String> createReplacementMap(
+            Map<TemplateVariableType, List<TemplateVariable>> variableBinderMap, 
+            BindingDto bindingDto) {
+        
+        return variableBinderMap.entrySet().stream()
+                .flatMap(typeEntry -> getReplacementValueByBinder(typeEntry, bindingDto))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    /**
+     * 바인더클래스를 통해 템플릿변수의 치환값을 가져온다
+     * @param typeEntry
+     * @param bindingDto
+     * @return
+     */
+    private Stream<Map.Entry<String, String>> getReplacementValueByBinder(
+            Map.Entry<TemplateVariableType, List<TemplateVariable>> typeEntry, 
+            BindingDto bindingDto) {
+        
+        TemplateVariableType variableType = typeEntry.getKey();
+        List<TemplateVariable> variables = typeEntry.getValue();
+        
+        VariableBinder binder = variableBinderMap.get(variableType.getClassName());
+        if (binder == null) {
+            throw new VariableBinderNotFoundException(variableType.getClassName());
+        }
+        
+        return binder.getValues(variables, bindingDto).entrySet().stream();
     }
 }
