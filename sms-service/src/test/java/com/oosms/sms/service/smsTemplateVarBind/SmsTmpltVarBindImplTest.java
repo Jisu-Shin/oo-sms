@@ -1,5 +1,8 @@
 package com.oosms.sms.service.smsTemplateVarBind;
 
+import com.oosms.common.dto.SmsSendRequestDto;
+import com.oosms.common.exception.ReplacementValueNotFoundException;
+import com.oosms.sms.config.TestConfig;
 import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
 import com.oosms.common.dto.CustListResponseDto;
 import com.oosms.common.dto.SmsTemplateRequestDto;
@@ -11,6 +14,7 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +33,7 @@ import static org.mockito.Mockito.when;
  */
 
 @SpringBootTest
+@Import(TestConfig.class)
 @Transactional
 class SmsTmpltVarBindImplTest {
 
@@ -41,15 +46,8 @@ class SmsTmpltVarBindImplTest {
     @Autowired
     SmsTmpltVarBinder smsTmpltVarBinder;
 
-    @MockitoBean
-    BindingDto bindingDto;
-
-    @MockitoBean
-    ItemApiServiceForVar itemApiServiceForVar;
-
-    @MockitoBean
-    CustApiServiceForVar custApiService;
-
+    @Autowired
+    CustApiServiceForVar custApiServiceForVar;
 
     @Test
     public void 템플릿변수enum_출력() throws Exception {
@@ -65,6 +63,7 @@ class SmsTmpltVarBindImplTest {
         SmsTemplate smsTemplate = SmsTemplate.createSmsTemplate(originalContent, SmsType.INFORMAITONAL);
 
         // when
+        BindingDto bindingDto = BindingDto.create(1L, new SmsSendRequestDto());
         String result = smsTmpltVarBinder.bind(smsTemplate, bindingDto);
         System.out.println(result);
 
@@ -103,9 +102,10 @@ class SmsTmpltVarBindImplTest {
 
         CustListResponseDto responseDto = new CustListResponseDto();
         responseDto.setName("홍길동");
-        when(custApiService.getCust(any())).thenReturn(responseDto);
+        when(custApiServiceForVar.getCust(any())).thenReturn(responseDto);
 
         //when
+        BindingDto bindingDto = BindingDto.create(1L, new SmsSendRequestDto());
         String result = smsTmpltVarBinder.bind(smsTemplate, bindingDto);
         System.out.println(result);
 
@@ -121,7 +121,8 @@ class SmsTmpltVarBindImplTest {
         SmsTemplate template = em.find(SmsTemplate.class, smsTmpltId);
 
         //when
-        assertThrows(IllegalStateException.class, () -> smsTmpltVarBinder.bind(template, bindingDto));
+        BindingDto bindingDto = BindingDto.create(1L, new SmsSendRequestDto());
+        assertThrows(ReplacementValueNotFoundException.class, () -> smsTmpltVarBinder.bind(template, bindingDto));
 
         //then
     }
