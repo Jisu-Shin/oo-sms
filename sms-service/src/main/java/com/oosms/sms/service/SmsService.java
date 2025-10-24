@@ -1,23 +1,21 @@
 package com.oosms.sms.service;
 
-import com.oosms.common.dto.CustInfo;
 import com.oosms.common.dto.SmsFindListResponseDto;
+import com.oosms.common.dto.SmsListSearchDto;
 import com.oosms.common.dto.SmsSendRequestDto;
 import com.oosms.common.exception.EmptySmsTargetException;
-import com.oosms.common.exception.NotFoundException;
 import com.oosms.common.exception.SmsTemplateNotFoundException;
 import com.oosms.sms.domain.Sms;
 import com.oosms.sms.domain.SmsTemplate;
 import com.oosms.sms.mapper.SmsMapper;
 import com.oosms.sms.repository.JpaSmsRepository;
 import com.oosms.sms.repository.JpaSmsTemplateRepository;
+import com.oosms.sms.repository.dto.SmsListSearchCondition;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,15 +55,12 @@ public class SmsService {
     /**
      * sms 발송 목록을 조회하는 서비스
      *
-     * @param startDt yyyyMMddHHmm 형식
-     * @param endDt yyyyMMddHHmm 형식
      */
     @Transactional
-    public List<SmsFindListResponseDto> findSmsList(String startDt, String endDt) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
-        LocalDateTime startLdt = LocalDateTime.parse(startDt,format);
-        LocalDateTime endLdt = LocalDateTime.parse(endDt,format);
-        return jpaSmsRepository.findAllBySendDtBetween(startLdt, endLdt).stream()
+    public List<SmsFindListResponseDto> findSmsList(SmsListSearchDto smsListSearchDto) {
+        log.info("@@@@@ SmsService.findSmsList = {}" , smsListSearchDto.toString());
+        SmsListSearchCondition searchCondition = smsMapper.toSearchCondition(smsListSearchDto);
+        return jpaSmsRepository.findBySearch(searchCondition).stream()
                 .map(smsMapper::toDto)
                 .collect(Collectors.toList());
     }

@@ -25,7 +25,8 @@ public class Cust extends BaseTimeEntity {
     private CustSmsConsentType smsConsentType;
 
     @Builder
-    private Cust(String name, String phoneNumber, CustSmsConsentType smsConsentType) {
+    private Cust(Long id, String name, String phoneNumber, CustSmsConsentType smsConsentType) {
+        this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.smsConsentType = smsConsentType;
@@ -33,7 +34,10 @@ public class Cust extends BaseTimeEntity {
 
     //==생성메서드==
     public static Cust createCust(String name, String phoneNumber, CustSmsConsentType smsConsentType){
-        Cust cust = new Cust(name, phoneNumber, smsConsentType);
+        Cust cust = Cust.builder()
+                .name(name)
+                .phoneNumber(phoneNumber)
+                .smsConsentType(smsConsentType).build();
         return cust;
     }
 

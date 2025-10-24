@@ -8,8 +8,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SmsFindListResponseDto {
     private Long smsId;
-    // todo
-//    private String custName;
+    private String custName;
     private String sendPhoneNumber;
     private String smsContent;
     private String sendDt;

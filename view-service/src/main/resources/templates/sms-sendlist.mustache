@@ -3,6 +3,37 @@
 <div class="container my-5">
     {{>layout/bodyheader}}
 
+    <div class="card p-4 shadow-sm border-0 mb-4">
+        <h5 class="card-title fw-bold text-warning">문자 발송 내역 조회</h5>
+        <form class="row g-3 align-items-center" action="/sms/sendList" method="GET">
+            <div class="col-md-3">
+                <label for="custName" class="visually-hidden">고객명</label>
+                <input type="text" name="custName" class="form-control" id="custName" placeholder="고객명을 입력해주세요" value="">
+            </div>
+            <div class="col-md-2">
+                <label for="startDate" class="visually-hidden">조회 시작 일자</label>
+                <input type="date" id="startDate" name="startDate" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label for="endDate" class="visually-hidden">조회 종료 일자</label>
+                <input type="date" id="endDate" name="endDate" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label for="bookingStatus" class="visually-hidden">발송 결과</label>
+                <select class="form-select" id="smsResult" name="smsResult">
+                    <option value="">전체 상태</option>
+                    <option value="SUCCESS">성공</option>
+                    <option value="NOT_SEND_TIME">발송 불가 시간</option>
+                    <option value="CUST_REJECT">고객 거절</option>
+                    <option value="AD_COUNT_OVER">광고 개수 초과</option>
+                </select>
+            </div>
+            <div class="col-md-auto">
+                <button type="submit" class="btn btn-warning">검색</button>
+            </div>
+        </form>
+    </div>
+
     <div class="card p-4 shadow-sm border-0">
         <h5 class="card-title fw-bold text-center text-warning mb-4">문자 발송 내역</h5>
 
@@ -22,7 +53,7 @@
                 {{#sms}}
                     <tr>
                         <td>{{smsId}}</td>
-                        <td></td>
+                        <td>{{custName}}</td>
                         <td>{{sendPhoneNumber}}</td>
                         <td>{{smsContent}}</td>
                         <td>{{sendDt}}</td>

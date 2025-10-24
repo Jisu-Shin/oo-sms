@@ -18,6 +18,8 @@ var main = {
 
         var _this = this;
 
+        _this.setDefaultDates();
+
         $('#btn-send').on('click', _this.sendSms);
 
         $('#phoneNumber').on('input', function() {
@@ -86,6 +88,23 @@ var main = {
         $('#btn-createItem').on("click", _this.createItem);
 
     },
+
+    setDefaultDates: function() {
+//        let startDateString = oper.getSevenDaysAgo().substr(0,8);
+        let startDateString = oper.getSevenDaysAgo().replace(/^(\d{4})(\d{2})(\d{2})(\d{4})$/, "$1-$2-$3");
+        let endDateString = oper.getTodayDt().replace(/^(\d{4})(\d{2})(\d{2})(\d{4})$/, "$1-$2-$3");
+
+        console.log(startDateString);
+        console.log(endDateString);
+
+        if (!$('#endDate').val()) {
+            $('#endDate').val(endDateString);
+        }
+
+        if (!$('#startDate').val()) {
+            $('#startDate').val(startDateString);
+        }
+    } ,
 
     createItem: function() {
         const form = $('#itemForm');
@@ -506,6 +525,21 @@ var oper = {
         let date = String(today.getDate()).padStart(2,"0");
         let hours = String(today.getHours()).padStart(2,"0");
         let minutes = String(today.getMinutes()).padStart(2,"0");
+        return year+month+date+hours+minutes;
+    },
+
+    getSevenDaysAgo : function() {
+        let today = new Date();
+
+        let sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(today.getDate() - 7);
+
+        let year = String(sevenDaysAgo.getFullYear());
+        let month = String(sevenDaysAgo.getMonth()+1).padStart(2,"0");
+        let date = String(sevenDaysAgo.getDate()).padStart(2,"0");
+        let hours = String(sevenDaysAgo.getHours()).padStart(2,"0");
+        let minutes = String(sevenDaysAgo.getMinutes()).padStart(2,"0");
+
         return year+month+date+hours+minutes;
     }
 }
