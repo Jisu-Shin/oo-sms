@@ -1,5 +1,6 @@
 package com.oosms.sms.service.smsTemplateVarBind;
 
+import com.oosms.common.exception.VariableBinderNotFoundException;
 import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
 import com.oosms.sms.domain.SmsTemplate;
 import com.oosms.sms.domain.SmsTmpltVarRel;
@@ -24,11 +25,10 @@ public class SmsTmpltVarBindImpl implements SmsTmpltVarBinder {
     @Override
     public String bind(SmsTemplate smsTemplate, BindingDto bindingDto) {
         List<SmsTmpltVarRel> tmpltVarRelList = smsTemplate.getTmpltVarRelList();
-        if (tmpltVarRelList.size() == 0) {
+        if (tmpltVarRelList.isEmpty()) {
             return smsTemplate.getTemplateContent();
         }
 
-        // TODO QueryDsl 이랑 Stream 비교해보기
         // 변수 유형별로 그룹핑
         Map<TemplateVariableType, List<TemplateVariable>> grouping = tmpltVarRelList.stream()
                 .collect(Collectors.groupingBy(
@@ -42,15 +42,12 @@ public class SmsTmpltVarBindImpl implements SmsTmpltVarBinder {
                 .flatMap(entry -> {
                     VariableBinder binder = variableBinderMap.get(entry.getKey().getClassName());
                     if (binder == null) {
-                        // todo Exception 필요
-                        log.warn("VariableBinder not found for type: {}", entry.getKey());
-                        return Stream.empty();
+                        throw new VariableBinderNotFoundException(entry.getKey().getClassName());
                     }
                     return binder.getValues(entry.getValue(), bindingDto).entrySet().stream();
                 })
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        String messageContent = TemplateVariableUtils.replaceVariables(smsTemplate.getTemplateContent(), replacements);
-        return messageContent;
+        return TemplateVariableUtils.replaceVariables(smsTemplate.getTemplateContent(), replacements);
     }
 }
