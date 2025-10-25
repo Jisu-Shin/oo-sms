@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SmsTemplate {
+public class SmsTemplate extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
