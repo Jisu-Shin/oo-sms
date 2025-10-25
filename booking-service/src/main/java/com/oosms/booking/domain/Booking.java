@@ -65,11 +65,6 @@ public class Booking {
      * 주문 취소
      */
     public void cancel() {
-        // TODO 취소 불가 시점 (공연 일주일 전이라던가...)
-//        if (getStatus() == FAIL_CANCEL) {
-//              throw new IllegalStateException("일주일 전 공연은 취소가 불가능합니다.");
-//        }
-
         this.status = BookingStatus.CANCEL;
         item.addStock(count);
     }
