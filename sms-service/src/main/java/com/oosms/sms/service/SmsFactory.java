@@ -8,7 +8,7 @@ import com.oosms.sms.domain.SmsResult;
 import com.oosms.sms.domain.SmsTemplate;
 import com.oosms.common.dto.SmsSendRequestDto;
 import com.oosms.sms.service.filter.SmsFilter;
-import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
+import com.oosms.sms.service.dto.BindingDto;
 import com.oosms.sms.service.smsTemplateVarBind.SmsTmpltVarBinder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
