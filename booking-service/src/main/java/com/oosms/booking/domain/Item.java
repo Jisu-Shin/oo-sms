@@ -4,15 +4,14 @@ import com.oosms.common.exception.NotEnoughStockException;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "dtype")
-@Getter
+@Getter @NoArgsConstructor
 public class Item {
     @Id
     @GeneratedValue
@@ -23,22 +22,13 @@ public class Item {
     private int price;
     private int stockQuantity;
 
-    @ManyToMany(mappedBy = "items")
-    private List<Category> categories = new ArrayList<>();
-
     @Builder
-    private Item(Long id, String name, int price, int stockQuantity, List<Category> categories) {
+    private Item(Long id, String name, int price, int stockQuantity) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.stockQuantity = stockQuantity;
-        this.categories = categories;
     }
-
-    public Item() {
-    }
-
-    //==연관관계==//
 
     //==비즈니스 로직==//
 
