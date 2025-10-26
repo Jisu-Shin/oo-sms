@@ -1,11 +1,10 @@
 package com.oosms.sms.service.smsTemplateVarBind;
 
-import com.oosms.common.dto.CustListResponseDto;
 import com.oosms.common.exception.ReplacementValueNotFoundException;
 import com.oosms.sms.client.ItemApiServiceForVar;
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.common.dto.ItemGetResponseDto;
-import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
+import com.oosms.sms.service.dto.BindingDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

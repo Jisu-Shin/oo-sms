@@ -1,6 +1,6 @@
 package com.oosms.sms.service.smsTemplateVarBind;
 
-import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
+import com.oosms.sms.service.dto.BindingDto;
 import com.oosms.sms.domain.SmsTemplate;
 
 public interface SmsTmpltVarBinder {
