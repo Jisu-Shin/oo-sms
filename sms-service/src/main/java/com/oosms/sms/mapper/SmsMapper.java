@@ -13,15 +13,12 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface SmsMapper {
 
-    @Mapping(target = "smsType", source="smsTemplate.smsType.displayName")
-    @Mapping(target = "sendDt", dateFormat = "yyyy/MM/dd HH:mm")
-    SmsFindListResponseDto toDto(Sms entity);
-
     @Mapping(target = "smsId", source = "sms.smsId")
     @Mapping(target = "sendPhoneNumber", source = "sms.sendPhoneNumber")
     @Mapping(target = "smsContent", source = "sms.smsContent")
     @Mapping(target = "smsResult", source = "sms.smsResult.displayName")
     @Mapping(target = "sendDt", source = "sms.sendDt", dateFormat = "yyyy/MM/dd HH:mm")
+    @Mapping(target = "smsType", source = "sms.smsTemplate.smsType.displayName")
     SmsFindListResponseDto toDto(SmsWithCust entity);
 
     @Mapping(target = "smsResult", source="smsResult", qualifiedByName = "toSmsResult")
