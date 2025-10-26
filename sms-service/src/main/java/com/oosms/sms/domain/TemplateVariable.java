@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TemplateVariable {
+public class TemplateVariable extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

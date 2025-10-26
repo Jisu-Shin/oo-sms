@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SmsTemplate {
+public class SmsTemplate extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
@@ -23,7 +23,7 @@ public class SmsTemplate {
     @Enumerated(EnumType.STRING)
     private SmsType smsType;
 
-    //todo cascade 확인하기 / 현재는 부모를 삭제할 때 연관된 자식도 자동삭제
+    //부모를 삭제할 때 연관된 자식도 자동삭제
     @OneToMany(mappedBy = "smsTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SmsTmpltVarRel> tmpltVarRelList = new ArrayList<>();
 

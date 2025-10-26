@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SmsTmpltVarRel {
+public class SmsTmpltVarRel extends BaseTimeEntity {
 
     @EmbeddedId
     private SmsTmpltVarRelId smsTmpltVarRelId;
