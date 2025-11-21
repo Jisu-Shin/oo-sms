@@ -1,12 +1,11 @@
 package com.oosms.sms.service.filter;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
+import com.oosms.cust.domain.Cust;
 import com.oosms.sms.config.TestConfig;
 import com.oosms.sms.domain.*;
 import jakarta.persistence.EntityManager;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +142,10 @@ class SmsFilterImplTest {
         LocalDateTime ldt = LocalDateTime.of(LocalDate.now(),LocalTime.of(19,0));
         String sendDt = ldt.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
 
-        Long custId = 1L;
+        Cust cust = Cust.builder().name("홍길동").build();
+        em.persist(cust);
+
+        Long custId = cust.getId();
         SmsTemplate smsTemplate = createTemplate("광고문자입니다~", SmsType.ADVERTISING);
         Sms sms1 = Sms.builder()
                 .custId(custId)

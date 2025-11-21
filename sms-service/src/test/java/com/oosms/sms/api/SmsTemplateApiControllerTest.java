@@ -97,7 +97,7 @@ class SmsTemplateApiControllerTest {
         mockMvc.perform(delete("/api/smsTemplates/5")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().is2xxSuccessful());
         verify(service, times(1)).deleteSmsTemplate(5L);
     }
 

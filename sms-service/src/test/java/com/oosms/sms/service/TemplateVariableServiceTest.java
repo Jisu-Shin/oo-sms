@@ -1,9 +1,12 @@
 package com.oosms.sms.service;
 
 import com.oosms.common.dto.TemplateVariableDto;
+import com.oosms.common.exception.MissingTemplateVariableException;
+import com.oosms.common.exception.TemplateVariableNotFoundException;
 import com.oosms.sms.domain.TemplateVariable;
 import com.oosms.sms.domain.TemplateVariableType;
 import com.oosms.sms.mapper.TemplateVariableMapper;
+import com.oosms.sms.repository.JpaSmsTmpltVarRelRepository;
 import com.oosms.sms.repository.JpaTemplateVariableRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +34,9 @@ class TemplateVariableServiceTest {
     @Mock
     JpaTemplateVariableRepository jpaTemplateVariableRepository;
 
+    @Mock
+    JpaSmsTmpltVarRelRepository jpaSmsTmpltVarRelRepository;
+
     @InjectMocks
     TemplateVariableService templateVariableService;
 
@@ -40,7 +46,7 @@ class TemplateVariableServiceTest {
         TemplateVariableDto dto = new TemplateVariableDto();
         dto.setKoText("고객명");
         dto.setEnText("custName");
-        dto.setVariableType(TemplateVariableType.CUST.getDisplayName());
+        dto.setDisplayVarType(TemplateVariableType.CUST.getDisplayName());
 
         when(jpaTemplateVariableRepository.save(any()))
                 .thenAnswer(invocation -> {
@@ -82,7 +88,7 @@ class TemplateVariableServiceTest {
                 .id(5L)
                 .koText(updateKoText)
                 .enText(updateEnText)
-                .variableType(TemplateVariableType.ITEM.name())
+                .displayVarType(TemplateVariableType.ITEM.getDisplayName())
                 .build();
         TemplateVariable templateVariable = TemplateVariable.create("custName","고객명", TemplateVariableType.CUST);
         when(jpaTemplateVariableRepository.findById(5L)).thenReturn(Optional.of(templateVariable));
@@ -107,8 +113,7 @@ class TemplateVariableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> templateVariableService.update(requestDto))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("템플릿변수 국문명이 없습니다");
+                .isInstanceOf(MissingTemplateVariableException.class);
     }
     
     @Test
@@ -118,6 +123,7 @@ class TemplateVariableServiceTest {
         ReflectionTestUtils.setField(templateVariable, "id", 5L);
         when(jpaTemplateVariableRepository.findById(5L))
                 .thenReturn(Optional.of(templateVariable));
+        when(jpaSmsTmpltVarRelRepository.findBySmsTmpltVarRelId_TmpltVarId(5L)).thenReturn(List.of());
         
         //when
         templateVariableService.delete(5L);
@@ -131,6 +137,6 @@ class TemplateVariableServiceTest {
         //given
         //when & then
         assertThatThrownBy(() -> templateVariableService.delete(5L))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(TemplateVariableNotFoundException.class);
     }
 }

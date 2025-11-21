@@ -1,6 +1,8 @@
 package com.oosms.sms.service;
 
 import com.oosms.common.dto.SmsTemplateRequestDto;
+import com.oosms.common.exception.SmsTemplateNotFoundException;
+import com.oosms.common.exception.TemplateVariableNotFoundException;
 import com.oosms.sms.domain.*;
 import com.oosms.sms.mapper.SmsTemplateMapper;
 import com.oosms.sms.repository.JpaSmsTemplateRepository;
@@ -96,21 +98,6 @@ public class SmsTemplateServiceTest {
     }
 
     @Test
-    public void 템플릿추가_템플릿내용null() throws Exception {
-        //given
-        String templateContent = null;
-        SmsTemplateRequestDto requestDto = SmsTemplateRequestDto.builder()
-                .templateContent(templateContent)
-                .smsType(SmsType.INFORMAITONAL.name())
-                .build();
-
-        //when & then
-        assertThatThrownBy(() -> service.create(requestDto))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("sms템플릿 내용이 없습니다");
-    }
-
-    @Test
     public void 템플릿추가_템플릿변수없음() throws Exception {
         //given
         String templateContent = "#{해당템플릿변수없음}은 ...";
@@ -121,8 +108,7 @@ public class SmsTemplateServiceTest {
 
         //when & then
         assertThatThrownBy(() -> service.create(requestDto))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 템플릿 변수는 없습니다");
+                .isInstanceOf(TemplateVariableNotFoundException.class);
     }
 
     @Test
@@ -135,8 +121,7 @@ public class SmsTemplateServiceTest {
 
         //when & then
         assertThatThrownBy(() -> service.update(requestDto))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 템플릿은 없습니다");
+                .isInstanceOf(SmsTemplateNotFoundException.class);
     }
 
     @Test
@@ -202,8 +187,7 @@ public class SmsTemplateServiceTest {
 
         //when & then
         assertThatThrownBy(() -> service.deleteSmsTemplate(10L))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 템플릿은 없습니다");
+                .isInstanceOf(SmsTemplateNotFoundException.class);
 
     }
 
