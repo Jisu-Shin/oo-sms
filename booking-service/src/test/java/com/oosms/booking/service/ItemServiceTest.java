@@ -6,6 +6,8 @@ import com.oosms.booking.repository.ItemSearch;
 import com.oosms.booking.repository.JpaItemRepository;
 import com.oosms.common.dto.ItemGetResponseDto;
 import com.oosms.common.dto.ItemUpdateRequestDto;
+import com.oosms.common.exception.DuplicateItemException;
+import com.oosms.common.exception.NotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -157,9 +159,8 @@ class ItemServiceTest {
 
         // when & then
         assertThatThrownBy(() -> itemService.saveItem(newItem))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("중복된 공연을 저장할 수 없습니다");
-        
+                .isInstanceOf(DuplicateItemException.class);
+
         verify(jpaItemRepository).findBySearch(any(ItemSearch.class));
     }
 
@@ -307,9 +308,8 @@ class ItemServiceTest {
 
         // when & then
         assertThatThrownBy(() -> itemService.findById(nonExistingId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 공연이 없습니다");
-        
+                .isInstanceOf(NotFoundException.class);
+
         verify(jpaItemRepository).findById(nonExistingId);
     }
 
@@ -382,9 +382,8 @@ class ItemServiceTest {
 
         // when & then
         assertThatThrownBy(() -> itemService.updateItem(requestDto))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 공연이 없습니다");
-        
+                .isInstanceOf(NotFoundException.class);
+
         verify(jpaItemRepository).findById(nonExistingId);
     }
 
