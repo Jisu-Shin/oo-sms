@@ -9,5 +9,4 @@ import java.util.List;
 public interface JpaSmsTmpltVarRelRepository extends JpaRepository<SmsTmpltVarRel, SmsTmpltVarRelId> {
     List<SmsTmpltVarRel> findBySmsTmpltVarRelId_SmsTmpltId(Long smsTmpltId);
     List<SmsTmpltVarRel> findBySmsTmpltVarRelId_TmpltVarId(Long tmpltVarId);
-    void deleteBySmsTmpltVarRelId_SmsTmpltId(Long smsTmpltId);
 }

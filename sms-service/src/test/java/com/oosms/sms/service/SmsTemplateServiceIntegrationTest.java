@@ -2,6 +2,8 @@ package com.oosms.sms.service;
 
 import com.oosms.common.dto.SmsTemplateListResponseDto;
 import com.oosms.common.dto.SmsTemplateRequestDto;
+import com.oosms.common.exception.SmsTemplateNotFoundException;
+import com.oosms.common.exception.TemplateVariableNotFoundException;
 import com.oosms.sms.config.TestConfig;
 import com.oosms.sms.domain.*;
 import com.oosms.sms.repository.JpaSmsTemplateRepository;
@@ -70,7 +72,7 @@ class SmsTemplateServiceIntegrationTest {
 
         //when
         assertThatThrownBy(()->smsTemplateService.create(requestDto))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(TemplateVariableNotFoundException.class);
     }
 
     @Test
@@ -105,7 +107,7 @@ class SmsTemplateServiceIntegrationTest {
         requestDto.setId(2L);
 
         //when
-        assertThatThrownBy(() -> smsTemplateService.update(requestDto)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> smsTemplateService.update(requestDto)).isInstanceOf(SmsTemplateNotFoundException.class);
     }
 
     @Test
@@ -126,8 +128,7 @@ class SmsTemplateServiceIntegrationTest {
     @Test
     public void 템플릿삭제() throws Exception {
         //given
-        createTemplateVariable("custName", "고객명", TemplateVariableType.CUST);
-        createTemplateVariable("performanceName", "공연명", TemplateVariableType.ITEM);
+        templateVariableSetUp();
         templateSetUp();
 
         //when

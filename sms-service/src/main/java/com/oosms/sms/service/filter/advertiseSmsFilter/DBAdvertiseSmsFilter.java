@@ -6,6 +6,7 @@ import com.oosms.sms.repository.JpaSmsRepository;
 import com.oosms.sms.repository.dto.SmsListSearchCondition;
 import com.oosms.sms.repository.dto.SmsWithCust;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component @Primary
 public class DBAdvertiseSmsFilter implements AdvertiseSmsFilter {
@@ -35,6 +37,7 @@ public class DBAdvertiseSmsFilter implements AdvertiseSmsFilter {
                 .build();
 
         List<SmsWithCust> smsList = jpaSmsRepository.findBySearch(searchCondition);
+        log.info("\nsmsList 개수 확인 {}", smsList.size());
 
         // 한 고객에게 광고성 문자는 하루에 2개만 발송할 수 있다.
         if (smsList.size() >= LIMIT_SMS) return false;

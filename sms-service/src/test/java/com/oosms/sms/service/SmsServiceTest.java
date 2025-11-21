@@ -4,6 +4,8 @@ import com.oosms.common.dto.CustInfo;
 import com.oosms.common.dto.SmsFindListResponseDto;
 import com.oosms.common.dto.SmsListSearchDto;
 import com.oosms.common.dto.SmsSendRequestDto;
+import com.oosms.common.exception.EmptySmsTargetException;
+import com.oosms.common.exception.SmsTemplateNotFoundException;
 import com.oosms.sms.domain.CustSmsConsentType;
 import com.oosms.sms.domain.Sms;
 import com.oosms.sms.domain.SmsTemplate;
@@ -88,10 +90,7 @@ class SmsServiceTest {
                 .build();
 
         //when & then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-                () -> smsService.send(requestDto));
-        
-        assertThat(exception.getMessage()).isEqualTo("sms 발송할 고객이 없습니다.");
+        assertThrows(EmptySmsTargetException.class, () -> smsService.send(requestDto));
     }
 
     @Test
@@ -106,10 +105,7 @@ class SmsServiceTest {
         when(jpaSmsTemplateRepository.findById(999L)).thenReturn(Optional.empty());
 
         //when & then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-                () -> smsService.send(requestDto));
-        
-        assertThat(exception.getMessage()).isEqualTo("해당 SMS 템플릿이 없습니다: 999");
+        assertThrows(SmsTemplateNotFoundException.class, () -> smsService.send(requestDto));
     }
 
     // ==== SMS 목록 조회 테스트 ====

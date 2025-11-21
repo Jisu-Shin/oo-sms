@@ -6,7 +6,7 @@ import com.oosms.cust.service.CustService;
 import com.oosms.sms.domain.*;
 import com.oosms.sms.service.filter.SmsFilter;
 import com.oosms.sms.service.smsTemplateVarBind.SmsTmpltVarBinder;
-import com.oosms.sms.service.smsTemplateVarBind.dto.BindingDto;
+import com.oosms.sms.service.dto.BindingDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -129,15 +129,15 @@ class SmsFactoryTest {
     public void sms발송_전화번호가_비어있으면_예외발생() throws Exception {
         //given
         SmsSendRequestDto requestDto = SmsSendRequestDto.builder()
-                .custIdList(List.of(1L)) // 빈 전화번호
+                .custIdList(List.of(5L)) // 빈 전화번호
                 .sendDt("202509060928")
                 .templateId(1L)
                 .build();
         CustListResponseDto emptyPhoneNumberCust = createCustListResponseDto(5L, "홍길동", null, CustSmsConsentType.ALL_ALLOW.name());
-        when(custService.findById(1L)).thenReturn(emptyPhoneNumberCust);
+        when(custService.findById(5L)).thenReturn(emptyPhoneNumberCust);
 
         //when & then
-        List<Sms> smsList = smsFactory.createSmsList(testSmsTemplate, testRequestDto);
+        List<Sms> smsList = smsFactory.createSmsList(testSmsTemplate, requestDto);
 
 //        assertThat(exception.getMessage()).isEqualTo("고객의 전화번호가 비어있습니다");
     }
