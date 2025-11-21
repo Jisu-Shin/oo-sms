@@ -30,7 +30,7 @@ public class SmsQueryDslImpl implements SmsQueryDsl {
             builder.and(sms.sendDt.between(searchCondition.getStartDate(), searchCondition.getEndDate()));
         }
 
-        if (searchCondition.getCustName() != null && !searchCondition.getCustName().isBlank() ) {
+        if (searchCondition.getCustName() != null && !searchCondition.getCustName().isBlank()) {
             builder.and(cust.name.eq(searchCondition.getCustName()));
         }
 
@@ -41,6 +41,12 @@ public class SmsQueryDslImpl implements SmsQueryDsl {
         if (searchCondition.getSmsResult() != null) {
             builder.and(sms.smsResult.eq(searchCondition.getSmsResult()));
         }
+
+        if(searchCondition.getCustId() != null) {
+            builder.and(sms.custId.eq(searchCondition.getCustId()));
+        }
+
+        System.out.println("builder = " + builder);
 
         return queryFactory
                 .select(new QSmsWithCust(

@@ -55,8 +55,7 @@ public class SmsTemplateService {
         smsTemplate.update(requestDto.getTemplateContent(), SmsType.valueOf(requestDto.getSmsType()));
 
         // 템플릿 관계 초기화
-        smsTmpltVarRelRepository.deleteBySmsTmpltVarRelId_SmsTmpltId(requestDto.getId());
-        smsTmpltVarRelRepository.flush(); // DB에 즉시 반영
+        smsTemplate.getTmpltVarRelList().clear();
 
         // 템플릿 관계 새로 생성
         List<String> koTextList = TemplateVariableUtils.extractVariabels(requestDto.getTemplateContent());
@@ -70,8 +69,8 @@ public class SmsTemplateService {
         SmsTemplate smsTemplate = smsTmpltRepository.findById(id)
                 .orElseThrow(() -> new SmsTemplateNotFoundException(id));
 
-        smsTmpltVarRelRepository.deleteBySmsTmpltVarRelId_SmsTmpltId(id);
         smsTmpltRepository.deleteById(id);
+        log.info("sms템플릿 삭제 완료");
     }
 
     public List<SmsTemplateListResponseDto> findAll() {
