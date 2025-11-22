@@ -90,12 +90,11 @@ var main = {
     },
 
     setDefaultDates: function() {
-//        let startDateString = oper.getSevenDaysAgo().substr(0,8);
         let startDateString = oper.getSevenDaysAgo().replace(/^(\d{4})(\d{2})(\d{2})(\d{4})$/, "$1-$2-$3");
         let endDateString = oper.getTodayDt().replace(/^(\d{4})(\d{2})(\d{2})(\d{4})$/, "$1-$2-$3");
 
-        console.log(startDateString);
-        console.log(endDateString);
+//        console.log(startDateString);
+//        console.log(endDateString);
 
         if (!$('#endDate').val()) {
             $('#endDate').val(endDateString);
@@ -107,7 +106,7 @@ var main = {
     } ,
 
     createItem: function() {
-        const form = $('#itemForm');
+        const form = $('#item-form');
         const formDataArray = form.serializeArray();
         const data = {};
         $.each(formDataArray, function() {
