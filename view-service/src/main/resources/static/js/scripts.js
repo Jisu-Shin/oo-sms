@@ -319,7 +319,7 @@ var main = {
 
         // 2. 입력 필드에 값 세팅
         $('#variable-id').val(id);
-        $('#variableType').val(type);
+        $('#displayVarType').val(type);
         $('#koText').val(koText);
         $('#enText').val(enText);
 
@@ -375,7 +375,7 @@ var main = {
                 id : $('#variable-id').val() ,
                 koText : $('#koText').val(),
                 enText : $('#enText').val(),
-                displayVarType : $('#variableType').val()
+                displayVarType : $('#displayVarType').val()
             };
             oper.ajax("POST", data, '/api/templateVariables/edit', callback.confirmEditVariable);
         }
