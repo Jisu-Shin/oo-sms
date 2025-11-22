@@ -1,6 +1,5 @@
 package com.oosms.sms.service;
 
-import com.oosms.common.exception.NotFoundException;
 import com.oosms.common.exception.SmsTemplateNotFoundException;
 import com.oosms.common.exception.TemplateVariableNotFoundException;
 import com.oosms.sms.domain.SmsTemplate;
@@ -55,7 +54,10 @@ public class SmsTemplateService {
         smsTemplate.update(requestDto.getTemplateContent(), SmsType.valueOf(requestDto.getSmsType()));
 
         // 템플릿 관계 초기화
-        smsTemplate.getTmpltVarRelList().clear();
+        int count = smsTmpltVarRelRepository.deleteBySmsTmpltId(smsTemplate.getId());
+        smsTemplate.getTmpltVarRelList().clear(); // 영속성컨텍스트 컬렉션을 비움
+
+        log.info("삭제한 개수 : {}", count);
 
         // 템플릿 관계 새로 생성
         List<String> koTextList = TemplateVariableUtils.extractVariabels(requestDto.getTemplateContent());
