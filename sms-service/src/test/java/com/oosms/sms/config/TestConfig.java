@@ -1,6 +1,5 @@
 package com.oosms.sms.config;
 
-import com.oosms.cust.repository.JpaCustRepository;
 import com.oosms.sms.client.CustApiServiceForVar;
 import com.oosms.sms.client.ItemApiServiceForVar;
 import org.mockito.Mockito;
